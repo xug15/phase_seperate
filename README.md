@@ -82,12 +82,10 @@ macscallpeak B_1_1_IP.unique B_1_1_input.unique
 macspeakdiff(){
 log=$output/a8-macspeakdiff/log
 [[ -d $log ]] || mkdir -p  $log
-
 #remove background file
 ((counter++))
 name1=$1
 name2=$2
-
 echo "#!/bin/bash
 #SBATCH -o $log/${name1}.%j.out
 #SBATCH -e $log/${name1}.%j.error
@@ -99,21 +97,20 @@ source /public/home/2022122/xugang/bashrc
 macs2 bdgdiff --t1 $output/a3-callpeak/${name1}_treat_pileup.bdg --c1 $output/a3-callpeak/${name1}_control_lambda.bdg --t2 $output/a3-callpeak/${name2}_treat_pileup.bdg --c2 $output/a3-callpeak/${name2}_control_lambda.bdg -g 60 -l 120 --outdir $output/a8-macspeakdiff/ --o-prefix ${name1}.vs.${name2}
 ">a8.peakdiff.$counter.$name1.sh
 }
+#macspeakdiff WT_2_1_IP.unique WT_1_1_IP.unique
+#macspeakdiff col_1_IP B_1_1_IP.unique
 ```
 
 ## Implemete the file into bigwig files.
 
 ```sh
-
 bamtobw(){
 log=$output/a4-bw/log
 [[ -d $log ]] || mkdir -p  $log
-
 #remove background file
 ((counter++))
 name1=$1
 name2=$2
-
 echo "#!/bin/bash
 #SBATCH -o $log/${name1}.%j.out
 #SBATCH -e $log/${name1}.%j.error
@@ -126,23 +123,21 @@ conda run -n deeptool bamCoverage -b ${output}/a2-bam/${name1}.bam -of bigwig -o
 
 ">a5.$counter.$name1.sh
 }
+#bamtobw WT_2_1_IP.unique wt_smxl7_h3k27me2
+#bamtobw M_2_1_IP.unique mut_smxl7_h3k27me2
 
 ```
 
 ## Compare the signal between two conditions by deeptools bamCompare.
 
 ```sh
-
-
 bigcomparef(){
 log=$output/a4-bw/log
 [[ -d $log ]] || mkdir -p  $log
-
 #remove background file
 ((counter++))
 name1=$1
 name2=$2
-
 echo "#!/bin/bash
 #SBATCH -o $log/${name1}.%j.out
 #SBATCH -e $log/${name1}.%j.error
@@ -156,21 +151,24 @@ conda run -n deeptool bamCompare -b1 ${output}/a2-bam/${name1}.bam -b2  $output/
 
 ">a4.$counter.$name1.sh
 }
+#bigcomparef col_1_IP col_1_Input 
+#bigcomparef col_2_IP col_2_Input
+#bigcomparef M_2_1_IP.unique M_2_1_input.unique
+#bigcomparef M_1_1_IP.unique M_1_1_input.unique
+#bigcomparef WT_2_1_IP.unique WT_2_1_input.unique
+#bigcomparef WT_1_1_IP.unique WT_1_1_input.unique
 ```
 
 ## Compare the bigwig files by deeptools bigwigCompare funciton.
 
 ```sh
-
 bwcomparef(){
 log=$output/a4-bw/log
 [[ -d $log ]] || mkdir -p  $log
-
 #remove background file
 ((counter++))
 name1=$1
 name2=$2
-
 echo "#!/bin/bash
 #SBATCH -o $log/${name1}.%j.out
 #SBATCH -e $log/${name1}.%j.error
@@ -182,9 +180,11 @@ source /public/home/2022122/xugang/bashrc
 conda run -n deeptool bigwigCompare -b1 ${output}/a4-bw/${name1}.log2.bw -b2  $output/a4-bw/${name2}.log2.bw -o ${output}/a4-bw/${name1}.vs.${name2}.log2.bw -p $((thread*2)) --binSize 1000
 ">a5.$counter.$name1.sh
 }
+bwcomparef M_2_1_IP.unique M_1_1_IP.unique
+bwcomparef WT_2_1_IP.unique WT_1_1_IP.unique
 ```
 
-##
+## Compute the matrix of gene body and get the matrix.
 
 ```sh
 computmatrix(){
@@ -207,9 +207,13 @@ source /public/home/2022122/xugang/bashrc
 conda run -n deeptool computeMatrix scale-regions -R ${bed2} ${bed3} ${bed4} -S  ${output}/a4-bw/${name1}.log2.bw --smartLabels -p $((thread)) --binSize 10 -b 3000 -a 3000 --regionBodyLength 5000 --sortRegions keep -o $output/a5-matrix/${name1}.gz --outFileSortedRegions $output/a5-matrix/computeMatrix_${name1}.bed --outFileNameMatrix $output/a5-matrix/matrix_${name1}.tab
 ">a5.computematrix.$counter.$name1.sh
 }
+computmatrix col_1_IP
+computmatrix col_2_IP
+computmatrix M_2_1_IP.unique.vs.M_1_1_IP.unique
+computmatrix WT_2_1_IP.unique.vs.WT_1_1_IP.unique
 ```
 
-##
+## Compute the signal density cover reference point(TSS) and get the matrix of reference points.
 
 ```sh
 computmatrixpoint(){
@@ -232,12 +236,13 @@ source /public/home/2022122/xugang/bashrc
 conda run -n deeptool computeMatrix reference-point  --referencePoint TSS -R ${bed} -S  ${output}/a4-bw/${name1}.bw --smartLabels -p $((thread)) -b 3000 -a 3000  --skipZeros -o $output/a5-matrix/${name1}.gz --outFileSortedRegions $output/a5-matrix/computeMatrix_${name1}.bed
 ">a5.computematrix.$counter.$name1.sh
 }
+computmatrixpoint wt_smxl7_h3k27me2
+computmatrixpoint mut_smxl7_h3k27me2
 ```
 
-##
+## Plot the signal distribution of gene body or reference points such as TSS, TTS.
 
 ```sh
-
 plotprofile(){
 #use deeptools plot data profiles
 log=$output/a6-profile/log
@@ -258,9 +263,15 @@ conda run -n deeptool plotProfile -m  $output/a5-matrix/${name1}.gz -out $output
 conda run -n deeptool plotProfile -m  $output/a5-matrix/${name1}.gz -out $output/a6-profile/Profile_${name1}.pdf --outFileNameData $output/a6-profile/plotProfile_${name1}.tab
 ">a6.plotprofile.$counter.$name1.sh 
 }
+plotprofile col_1_IP
+plotprofile col_2_IP
+plotprofile M_2_1_IP.unique.vs.M_1_1_IP.unique
+plotprofile WT_2_1_IP.unique.vs.WT_1_1_IP.unique
+plotprofile wt_smxl7_h3k27me2
+plotprofile mut_smxl7_h3k27me2 
 ```
 
-##
+## Plot the heatmap of Chip-seq signal coverage in the gene body or reference points.
 
 ```sh
 
@@ -268,11 +279,9 @@ plotheatmap(){
 #plot peak heatmap.
 log=$output/a7-heatmap/log
 [[ -d $log ]] || mkdir -p  $log
-
 #remove background file
 ((counter++))
 name1=$1
-
 echo "#!/bin/bash
 #SBATCH -o $log/${name1}.%j.out
 #SBATCH -e $log/${name1}.%j.error
@@ -285,11 +294,17 @@ source /public/home/2022122/xugang/bashrc
 conda run -n deeptool plotHeatmap --heatmapWidth 12 --heatmapHeight 50 --zMax 10 --colorList \" #4393C3,white,#A50026 \" --missingDataColor white -m  $output/a5-matrix/${name1}.gz -out $output/a7-heatmap/${name1}_Heatmap.eps --boxAroundHeatmaps no
 conda run -n deeptool plotHeatmap --heatmapWidth 12 --heatmapHeight 50 --zMax 10 --colorList \" #4393C3,white,#A50026 \" --missingDataColor white -m  $output/a5-matrix/${name1}.gz -out $output/a7-heatmap/${name1}_Heatmap.pdf --boxAroundHeatmaps no
 ">a7.heatmap.$counter.$name1.sh
-
 }
+plotheatmap col_1_IP
+plotheatmap col_2_IP
+plotheatmap WT_2_1_IP.unique.vs.WT_1_1_IP.unique
+plotheatmap M_2_1_IP.unique.vs.M_1_1_IP.unique
+plotheatmap wt_smxl7_h3k27me2
+plotheatmap mut_smxl7_h3k27me2 
+
 ```
 
-##
+## Impletement the two replicates peaks.
 
 ```sh
 peakoverlap(){
@@ -304,40 +319,7 @@ bedtools window -a col_2_IP_summits.bed -b col_1_IP_summits.bed -w 120  -v |wc -
 
 ```sh
 
-#macspeakdiff WT_2_1_IP.unique  WT_1_1_IP.unique
-#macspeakdiff col_1_IP B_1_1_IP.unique
-#bigcomparef col_1_IP col_1_Input 
-#bigcomparef col_2_IP col_2_Input
-#bigcomparef M_2_1_IP.unique M_2_1_input.unique
-#bigcomparef M_1_1_IP.unique M_1_1_input.unique
-#bigcomparef WT_2_1_IP.unique WT_2_1_input.unique
-#bigcomparef WT_1_1_IP.unique WT_1_1_input.unique
-#bamtobw WT_2_1_IP.unique wt_smxl7_h3k27me2
-#bamtobw M_2_1_IP.unique mut_smxl7_h3k27me2
 
-#bwcomparef M_2_1_IP.unique M_1_1_IP.unique
-#bwcomparef WT_2_1_IP.unique WT_1_1_IP.unique
-
-#computmatrix col_1_IP
-#computmatrix col_2_IP
-#computmatrix M_2_1_IP.unique.vs.M_1_1_IP.unique
-#computmatrix WT_2_1_IP.unique.vs.WT_1_1_IP.unique
-
-computmatrixpoint wt_smxl7_h3k27me2
-computmatrixpoint mut_smxl7_h3k27me2
-
-#plotprofile col_1_IP
-#plotprofile col_2_IP
-#plotprofile M_2_1_IP.unique.vs.M_1_1_IP.unique
-#plotprofile WT_2_1_IP.unique.vs.WT_1_1_IP.unique
-plotprofile wt_smxl7_h3k27me2
-plotprofile mut_smxl7_h3k27me2 
-#plotheatmap col_1_IP
-#plotheatmap col_2_IP
-#plotheatmap WT_2_1_IP.unique.vs.WT_1_1_IP.unique
-#plotheatmap M_2_1_IP.unique.vs.M_1_1_IP.unique
-plotheatmap wt_smxl7_h3k27me2
-plotheatmap mut_smxl7_h3k27me2 
 
 
 
