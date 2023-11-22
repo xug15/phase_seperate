@@ -8,7 +8,11 @@ O_1    过表达 smxl7 H3
 O_2    过表达 smxl7 H3k27me3  
 O-3-1    smax7 -(转录因子) GFP ChIP-seq  
 O-4-1    smax7   -(转录因子) GFP ChIP-seq 重复  
-B_1_1    空白对照 GFP ChIP-seq  
+B_1_1    空白对照 GFP ChIP-seq 
+
+col_1 DAP-seq Chip-seq SMXL7
+col_2 DAP-seq Chip-seq SMXL7 
+
  
 ATAC_M_1   突变体  (SMX7)  
 ATAC_M_2   突变体重复 (SMX7)  
@@ -229,7 +233,33 @@ computmatrix col_2_IP
 computmatrix M_2_1_IP.unique.vs.M_1_1_IP.unique
 computmatrix WT_2_1_IP.unique.vs.WT_1_1_IP.unique
 ```
+## multiple input files (scale-regions mode)
 
+```sh
+computmatrix_multi(){
+#calculate the matrix to calculate
+log=$output/a5-matrix/log
+[[ -d $log ]] || mkdir -p  $log
+
+#remove background file
+((counter++))
+name1=$1
+name2=$2
+name3=$3
+echo "#!/bin/bash
+#SBATCH -o $log/${name1}.%j.out
+#SBATCH -e $log/${name1}.%j.error
+#SBATCH --partition=${node}
+#SBATCH -J 5${1}
+#SBATCH -N 1
+#SBATCH -n ${thread}
+source /public/home/2022122/xugang/bashrc
+
+conda run -n deeptool computeMatrix scale-regions -R ${bed2} ${bed3} ${bed4} -S ${output}/a4-bw/${name1}.log2.bw ${output}/a4-bw/${name2}.log2.bw ${output}/a4-bw/${name3}.log2.bw --smartLabels -p $((thread)) --binSize 10 -b 3000 -a 3000 --regionBodyLength 5000 --sortRegions keep -o $output/a5-matrix/${name1}.${name2}.${name3}.gz --outFileSortedRegions $output/a5-matrix/computeMatrix_${name1}.${name2}.${name3}.bed --outFileNameMatrix $output/a5-matrix/matrix_${name1}.${name2}.${name3}.tab
+">a5.computematrix.multi.$counter.$name1.sh
+}
+computmatrix_multi col_1_IP M_2_1_IP.unique.vs.M_1_1_IP.unique WT_2_1_IP.unique.vs.WT_1_1_IP.unique
+```
 ## Compute the signal density cover reference point(TSS) and get the matrix of reference points.
 
 ```sh
@@ -256,6 +286,36 @@ conda run -n deeptool computeMatrix reference-point  --referencePoint TSS -R ${b
 computmatrixpoint wt_smxl7_h3k27me2
 computmatrixpoint mut_smxl7_h3k27me2
 ```
+## Compute the signal density cover reference point(TSS) with multiple files and get the matrix of reference points.
+
+```sh
+computmatrixpoint_multi(){
+#calculate the matrix to calculate
+log=$output/a5-matrix/log
+[[ -d $log ]] || mkdir -p  $log
+
+#remove background file
+((counter++))
+name1=$1
+name2=$2
+name3=$3
+echo "#!/bin/bash
+#SBATCH -o $log/${name1}.%j.out
+#SBATCH -e $log/${name1}.%j.error
+#SBATCH --partition=${node}
+#SBATCH -J 5${1}
+#SBATCH -N 1
+#SBATCH -n ${thread}
+source /public/home/2022122/xugang/bashrc
+
+conda run -n deeptool computeMatrix reference-point  --referencePoint TSS -R ${bed} -S {output}/a4-bw/${name1}.log2.bw ${output}/a4-bw/${name2}.log2.bw ${output}/a4-bw/${name3}.log2.bw --smartLabels -p $((thread)) -b 3000 -a 3000  --skipZeros -o $output/a5-matrix/${name1}.${name2}.${name3}.point.gz --outFileSortedRegions $output/a5-matrix/computeMatrix.point_${name1}.${name2}.${name3}.point.bed
+">a5.computematrix.point.$counter.${name1}.${name2}.${name3}.sh
+}
+computmatrixpoint_multi col_1_IP M_2_1_IP.unique.vs.M_1_1_IP.unique WT_2_1_IP.unique.vs.WT_1_1_IP.unique
+#computmatrixpoint wt_smxl7_h3k27me2
+#computmatrixpoint mut_smxl7_h3k27me2
+```
+
 
 ## Plot the signal distribution of gene body or reference points such as TSS, TTS.
 
