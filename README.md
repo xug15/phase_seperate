@@ -26,7 +26,9 @@ counter=0
 
 ```
 
-##
+## Using the bowtie. Implemete the read into genome sequence.
+Fistly using software align the reads into genome, the filter the result and transfor formate into bam files.
+sort the bam.
 
 ```sh
 
@@ -43,7 +45,8 @@ echo ''
 }
 ```
 
-##
+## Using the macs2 software to call peaks.
+the output files contain the peak locations.
 
 ```sh
 macscallpeak(){
@@ -67,8 +70,13 @@ source /public/home/2022122/xugang/bashrc
 macs2 callpeak  -B -t $output/a2-bam/${name1}.bam -c $output/a2-bam/${name2}.bam -n cond1 --nomodel --extsize 120 --outdir $output/a3-callpeak/ --name ${name1}
 ">a3.callpeak.$counter.$name1.$name2.sh
 }
+
+
+macscallpeak WT_2_1_IP.unique WT_2_1_input.unique
+macscallpeak WT_1_1_IP.unique WT_1_1_input.unique
+macscallpeak B_1_1_IP.unique B_1_1_input.unique
 ```
-##
+## calculate the difference of peaks between the different conditions with macs software.
 
 ```sh
 macspeakdiff(){
@@ -93,7 +101,7 @@ macs2 bdgdiff --t1 $output/a3-callpeak/${name1}_treat_pileup.bdg --c1 $output/a3
 }
 ```
 
-##
+## Implemete the file into bigwig files.
 
 ```sh
 
@@ -121,7 +129,7 @@ conda run -n deeptool bamCoverage -b ${output}/a2-bam/${name1}.bam -of bigwig -o
 
 ```
 
-##
+## Compare the signal between two conditions by deeptools bamCompare.
 
 ```sh
 
@@ -150,7 +158,7 @@ conda run -n deeptool bamCompare -b1 ${output}/a2-bam/${name1}.bam -b2  $output/
 }
 ```
 
-##
+## Compare the bigwig files by deeptools bigwigCompare funciton.
 
 ```sh
 
@@ -179,8 +187,6 @@ conda run -n deeptool bigwigCompare -b1 ${output}/a4-bw/${name1}.log2.bw -b2  $o
 ##
 
 ```sh
-
-
 computmatrix(){
 #calculate the matrix to calculate
 log=$output/a5-matrix/log
@@ -234,7 +240,6 @@ conda run -n deeptool computeMatrix reference-point  --referencePoint TSS -R ${b
 
 plotprofile(){
 #use deeptools plot data profiles
-
 log=$output/a6-profile/log
 [[ -d $log ]] || mkdir -p  $log
 #remove background file
@@ -299,9 +304,6 @@ bedtools window -a col_2_IP_summits.bed -b col_1_IP_summits.bed -w 120  -v |wc -
 
 ```sh
 
-#macscallpeak WT_2_1_IP.unique WT_2_1_input.unique
-#macscallpeak WT_1_1_IP.unique WT_1_1_input.unique
-#macscallpeak B_1_1_IP.unique B_1_1_input.unique
 #macspeakdiff WT_2_1_IP.unique  WT_1_1_IP.unique
 #macspeakdiff col_1_IP B_1_1_IP.unique
 #bigcomparef col_1_IP col_1_Input 
