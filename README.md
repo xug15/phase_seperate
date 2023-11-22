@@ -1,4 +1,22 @@
 # phase_seperate
+## Sample information 
+M-1-1    突变体 H3 ChIP-seq (SMX7) 
+M-2-1    突变体 H3K27me3 ChIP-seq (SMX7) 
+WT_1_1    野生型 H3 ChIP-seq (SMX7) 
+WT_2_1    野生型 H3K27me3 ChIP-seq (SMX7) 
+O_1    过表达 smxl7 H3 
+O_2    过表达 smxl7 H3k27me3 
+O-3-1    smax7 -(转录因子) GFP ChIP-seq 
+O-4-1    smax7   -(转录因子) GFP ChIP-seq 重复 
+B_1_1    空白对照 GFP ChIP-seq 
+ 
+ATAC_M_1   突变体  (SMX7) 
+ATAC_M_2   突变体重复 (SMX7) 
+ATAC_O_1   过表达 (SMX7) 
+ATAC_O_2   过表达重复 (SMX7) 
+ATAC_WT_1 野生型 (SMX7) 
+ATAC_WT_2 野生型重复 (SMX7) 
+
 
 ## 1. Set up environment variables.
 ```sh
