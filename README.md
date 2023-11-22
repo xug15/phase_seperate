@@ -97,8 +97,8 @@ source /public/home/2022122/xugang/bashrc
 macs2 bdgdiff --t1 $output/a3-callpeak/${name1}_treat_pileup.bdg --c1 $output/a3-callpeak/${name1}_control_lambda.bdg --t2 $output/a3-callpeak/${name2}_treat_pileup.bdg --c2 $output/a3-callpeak/${name2}_control_lambda.bdg -g 60 -l 120 --outdir $output/a8-macspeakdiff/ --o-prefix ${name1}.vs.${name2}
 ">a8.peakdiff.$counter.$name1.sh
 }
-#macspeakdiff WT_2_1_IP.unique WT_1_1_IP.unique
-#macspeakdiff col_1_IP B_1_1_IP.unique
+macspeakdiff WT_2_1_IP.unique WT_1_1_IP.unique
+macspeakdiff col_1_IP B_1_1_IP.unique
 ```
 
 ## Implemete the file into bigwig files.
@@ -123,8 +123,8 @@ conda run -n deeptool bamCoverage -b ${output}/a2-bam/${name1}.bam -of bigwig -o
 
 ">a5.$counter.$name1.sh
 }
-#bamtobw WT_2_1_IP.unique wt_smxl7_h3k27me2
-#bamtobw M_2_1_IP.unique mut_smxl7_h3k27me2
+bamtobw WT_2_1_IP.unique wt_smxl7_h3k27me2
+bamtobw M_2_1_IP.unique mut_smxl7_h3k27me2
 
 ```
 
@@ -151,12 +151,12 @@ conda run -n deeptool bamCompare -b1 ${output}/a2-bam/${name1}.bam -b2  $output/
 
 ">a4.$counter.$name1.sh
 }
-#bigcomparef col_1_IP col_1_Input 
-#bigcomparef col_2_IP col_2_Input
-#bigcomparef M_2_1_IP.unique M_2_1_input.unique
-#bigcomparef M_1_1_IP.unique M_1_1_input.unique
-#bigcomparef WT_2_1_IP.unique WT_2_1_input.unique
-#bigcomparef WT_1_1_IP.unique WT_1_1_input.unique
+bigcomparef col_1_IP col_1_Input 
+bigcomparef col_2_IP col_2_Input
+bigcomparef M_2_1_IP.unique M_2_1_input.unique
+bigcomparef M_1_1_IP.unique M_1_1_input.unique
+bigcomparef WT_2_1_IP.unique WT_2_1_input.unique
+bigcomparef WT_1_1_IP.unique WT_1_1_input.unique
 ```
 
 ## Compare the bigwig files by deeptools bigwigCompare funciton.
@@ -318,17 +318,10 @@ bedtools window -a col_2_IP_summits.bed -b col_1_IP_summits.bed -w 120  -v |wc -
 ##
 
 ```sh
-
-
-
-
-
-
-#na1=col_1_IP_summits.bed
-#wc -l ${na1}
-#bedtools intersect -a ${na1} -b /public/home/2022122/xugang/project/tair10/tair10.exon.bed -wa |sort -u | wc -l
-#bedtools intersect -a ${na1} -b /public/home/2022122/xugang/project/tair10/tair10.exon.bed -wa -v > ${na1}.r1.bed
-
+na1=col_1_IP_summits.bed
+wc -l ${na1}
+bedtools intersect -a ${na1} -b /public/home/2022122/xugang/project/tair10/tair10.exon.bed -wa |sort -u | wc -l
+bedtools intersect -a ${na1} -b /public/home/2022122/xugang/project/tair10/tair10.exon.bed -wa -v > ${na1}.r1.bed
 ```
 
 
