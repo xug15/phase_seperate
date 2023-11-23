@@ -93,7 +93,7 @@ echo -e "#!/bin/bash
 echo date
 source /public/home/2022122/xugang/bashrc
 
-samtools view -bhS -q 30 --threads ${thread} -bS $output/a1-bowtie2/${name}.sam > $output/$file/${name}.bam
+samtools view -q 30 --threads ${thread} -bhS $output/a1-bowtie2/${name}.sam > $output/$file/${name}.bam
 samtools sort --threads ${thread} $output/$file/${name}.bam > $output/$file/${name}.sort.bam 
 rm  $output/$file/${name}.bam
 mv $output/$file/${name}.sort.bam $output/$file/${name2}.unique.bam
@@ -163,6 +163,7 @@ macspeakdiff col_1_IP B_1_1_IP.unique
 ```
 
 ## Implemete the file into bigwig files.
+Just tranform the bam to bigwig.
 
 ```sh
 bamtobw(){
@@ -188,8 +189,10 @@ bamtobw WT_2_1_IP.unique wt_smxl7_h3k27me2
 bamtobw M_2_1_IP.unique mut_smxl7_h3k27me2
 
 ```
+## remove background signal, and generate the output file with bigwig file format.  
+* Compare the signal between two conditions by deeptools bamCompare.  
 
-## Compare the signal between two conditions by deeptools bamCompare.
+
 
 ```sh
 bigcomparef(){
@@ -199,6 +202,7 @@ log=$output/a4-bw/log
 ((counter++))
 name1=$1
 name2=$2
+name3=$3 
 echo "#!/bin/bash
 #SBATCH -o $log/${name1}.%j.out
 #SBATCH -e $log/${name1}.%j.error
@@ -207,21 +211,24 @@ echo "#!/bin/bash
 #SBATCH -N 1
 #SBATCH -n ${thread}
 source /public/home/2022122/xugang/bashrc
-conda run -n deeptool bamCompare -b1 ${output}/a2-bam/${name1}.bam -b2  $output/a2-bam/${name2}.bam -o ${output}/a4-bw/${name1}.log2.bw -p $((thread*2)) --ignoreDuplicates --binSize 1000 
-#bigWigToBedGraph ${output}/a4-bw/${name1}.log2.bw ${output}/a4-bw/${name1}.log2.bed
+conda run -n deeptool bamCompare -b1 ${output}/a2-bam/${name1}.bam -b2  $output/a2-bam/${name2}.bam -o ${output}/a4-bw/${name3}.rmbg.bw -p $((thread)) --ignoreDuplicates --binSize 1000 
+
 
 ">a4.$counter.$name1.sh
 }
-bigcomparef dap-smxl7-r1-ip dap-smxl7-r1-input
-bigcomparef dap-smxl7-r2-ip dap-smxl7-r2-input
-bigcomparef M_2_1_IP.unique M_2_1_input.unique
-bigcomparef M_1_1_IP.unique M_1_1_input.unique
-bigcomparef WT_2_1_IP.unique WT_2_1_input.unique
-bigcomparef WT_1_1_IP.unique WT_1_1_input.unique
-
+bigcomparef dap-smxl7-r1-ip.unique dap-smxl7-r1-input.unique dap-smxl7-r1 
+bigcomparef dap-smxl7-r2-ip.unique dap-smxl7-r2-input.unique dap-smxl7-r2
+bigcomparef M_h3_1_IP.unique M_h3_1_input.unique M_h3
+bigcomparef M_h3k27me3_1_IP.unique M_h3k27me3_1_input.unique M_h3k27me3
+bigcomparef wt_h3_IP.unique wt_h3_input.unique wt_h3 
+bigcomparef wt_h3k27me3_IP.unique wt_h3k27me3_input.unique wt_h3k27me3 
+bigcomparef oe_h3k27me3_IP.unique oe_h3k27me3_input.unique oe_h3k27me3
+bigcomparef oe_h3_IP.unique oe_h3_input.unique oe_h3
 ```
 
-## Compare the bigwig files by deeptools bigwigCompare funciton.
+
+## Calculate the H3K27me3/H3 signal.
+* Compare the bigwig files by deeptools bigwigCompare funciton.
 
 ```sh
 bwcomparef(){
@@ -231,6 +238,7 @@ log=$output/a4-bw/log
 ((counter++))
 name1=$1
 name2=$2
+name3=$3 
 echo "#!/bin/bash
 #SBATCH -o $log/${name1}.%j.out
 #SBATCH -e $log/${name1}.%j.error
@@ -239,11 +247,13 @@ echo "#!/bin/bash
 #SBATCH -N 1
 #SBATCH -n ${thread}
 source /public/home/2022122/xugang/bashrc
-conda run -n deeptool bigwigCompare -b1 ${output}/a4-bw/${name1}.log2.bw -b2  $output/a4-bw/${name2}.log2.bw -o ${output}/a4-bw/${name1}.vs.${name2}.log2.bw -p $((thread*2)) --binSize 1000
+conda run -n deeptool bigwigCompare -b1 ${output}/a4-bw/${name1}.rmbg.bw -b2  $output/a4-bw/${name2}.rmbg.bw -o ${output}/a4-bw/${name3}.bw -p $((thread)) --binSize 1000
 ">a5.$counter.$name1.sh
 }
-bwcomparef M_2_1_IP.unique M_1_1_IP.unique
-bwcomparef WT_2_1_IP.unique WT_1_1_IP.unique
+bwcomparef M_h3k27me3 M_h3 M_h3k27me3.h3
+bwcomparef oe_h3k27me3 oe_h3 oe_h3k27me3.h3
+bwcomparef wt_h3k27me3 wt_h3 wt_h3k27me3.h3 
+
 ```
 
 ## Compute the matrix of gene body and get the matrix.
@@ -287,6 +297,7 @@ log=$output/a5-matrix/log
 name1=$1
 name2=$2
 name3=$3
+name4=$4
 echo "#!/bin/bash
 #SBATCH -o $log/${name1}.%j.out
 #SBATCH -e $log/${name1}.%j.error
@@ -296,10 +307,10 @@ echo "#!/bin/bash
 #SBATCH -n ${thread}
 source /public/home/2022122/xugang/bashrc
 
-conda run -n deeptool computeMatrix scale-regions -R ${bed2} ${bed3} ${bed4} -S ${output}/a4-bw/${name1}.log2.bw ${output}/a4-bw/${name2}.log2.bw ${output}/a4-bw/${name3}.log2.bw --smartLabels -p $((thread)) --binSize 10 -b 3000 -a 3000 --regionBodyLength 5000 --sortRegions keep -o $output/a5-matrix/${name1}.${name2}.${name3}.gz --outFileSortedRegions $output/a5-matrix/computeMatrix_${name1}.${name2}.${name3}.bed --outFileNameMatrix $output/a5-matrix/matrix_${name1}.${name2}.${name3}.tab
+conda run -n deeptool computeMatrix scale-regions -R ${bed2} ${bed3} -S ${output}/a4-bw/${name1}.bw ${output}/a4-bw/${name2}.bw ${output}/a4-bw/${name3}.bw --smartLabels -p $((thread)) --binSize 10 -b 3000 -a 3000 --regionBodyLength 5000 --sortRegions keep -o $output/a5-matrix/${name4}.gz --outFileSortedRegions $output/a5-matrix/computeMatrix_${name4}.bed --outFileNameMatrix $output/a5-matrix/matrix_${name4}.tab
 ">a5.computematrix.multi.$counter.$name1.sh
 }
-computmatrix_multi col_1_IP M_2_1_IP.unique.vs.M_1_1_IP.unique WT_2_1_IP.unique.vs.WT_1_1_IP.unique
+computmatrix_multi wt_h3k27me3.h3 M_h3k27me3.h3 oe_h3k27me3.h3 wt.m.oe.h3k27.h3
 ```
 ## Compute the signal density cover reference point(TSS) and get the matrix of reference points.
 
@@ -340,6 +351,7 @@ log=$output/a5-matrix/log
 name1=$1
 name2=$2
 name3=$3
+name4=$4
 echo "#!/bin/bash
 #SBATCH -o $log/${name1}.%j.out
 #SBATCH -e $log/${name1}.%j.error
@@ -349,12 +361,10 @@ echo "#!/bin/bash
 #SBATCH -n ${thread}
 source /public/home/2022122/xugang/bashrc
 
-conda run -n deeptool computeMatrix reference-point  --referencePoint TSS -R ${bed} -S {output}/a4-bw/${name1}.log2.bw ${output}/a4-bw/${name2}.log2.bw ${output}/a4-bw/${name3}.log2.bw --smartLabels -p $((thread)) -b 3000 -a 3000  --skipZeros -o $output/a5-matrix/${name1}.${name2}.${name3}.point.gz --outFileSortedRegions $output/a5-matrix/computeMatrix.point_${name1}.${name2}.${name3}.point.bed
-">a5.computematrix.point.$counter.${name1}.${name2}.${name3}.sh
+conda run -n deeptool computeMatrix reference-point  --referencePoint TSS -R ${bed} -S ${output}/a4-bw/${name1}.log2.bw ${output}/a4-bw/${name2}.log2.bw ${output}/a4-bw/${name3}.log2.bw --smartLabels -p $((thread)) -b 3000 -a 3000  --skipZeros -o $output/a5-matrix/${name4}.point.gz --outFileSortedRegions $output/a5-matrix/computeMatrix.point_${name4}.point.bed
+">a5.computematrix.point.$counter.${name4}.sh
 }
-computmatrixpoint_multi col_1_IP M_2_1_IP.unique.vs.M_1_1_IP.unique WT_2_1_IP.unique.vs.WT_1_1_IP.unique
-#computmatrixpoint wt_smxl7_h3k27me2
-#computmatrixpoint mut_smxl7_h3k27me2
+computmatrixpoint_multi wt_h3k27me3.h3 M_h3k27me3.h3 oe_h3k27me3.h3 wt.m.oe.h3k27.h3
 ```
 
 
@@ -381,6 +391,9 @@ conda run -n deeptool plotProfile -m  $output/a5-matrix/${name1}.gz -out $output
 conda run -n deeptool plotProfile -m  $output/a5-matrix/${name1}.gz -out $output/a6-profile/Profile_${name1}.pdf --outFileNameData $output/a6-profile/plotProfile_${name1}.tab
 ">a6.plotprofile.$counter.$name1.sh 
 }
+plotprofile wt.m.oe.h3k27.h3
+plotprofile wt.m.oe.h3k27.h3.point
+
 plotprofile col_1_IP
 plotprofile col_2_IP
 plotprofile M_2_1_IP.unique.vs.M_1_1_IP.unique
@@ -394,7 +407,6 @@ plotprofile col_1_IP.M_2_1_IP.unique.vs.M_1_1_IP.unique.WT_2_1_IP.unique.vs.WT_1
 ## Plot the heatmap of Chip-seq signal coverage in the gene body or reference points.
 
 ```sh
-
 plotheatmap(){
 #plot peak heatmap.
 log=$output/a7-heatmap/log
@@ -415,6 +427,9 @@ conda run -n deeptool plotHeatmap --heatmapWidth 12 --heatmapHeight 50 --zMax 10
 conda run -n deeptool plotHeatmap --heatmapWidth 12 --heatmapHeight 50 --zMax 10 --colorList \" #4393C3,white,#A50026 \" --missingDataColor white -m  $output/a5-matrix/${name1}.gz -out $output/a7-heatmap/${name1}_Heatmap.pdf --boxAroundHeatmaps no
 ">a7.heatmap.$counter.$name1.sh
 }
+plotheatmap wt.m.oe.h3k27.h3
+plotheatmap wt.m.oe.h3k27.h3.point
+
 plotheatmap col_1_IP
 plotheatmap col_2_IP
 plotheatmap WT_2_1_IP.unique.vs.WT_1_1_IP.unique
