@@ -54,15 +54,45 @@ sort the bam.
 ```sh
 
 bowtief(){
-#map to tair10 genome
-echo '' 
+name=$1
+file='a1-map'
+[[ -d $output/${file}/log ]] || mkdir -p $output/${file}/log
+echo -e "#!/bin/bash
+#SBATCH -o ${output}/$file/log/${name}.%j.out
+#SBATCH -e ${output}/$file/log/${name}.%j.error
+#SBATCH --partition=${node}
+#SBATCH -J 1${name}
+#SBATCH -N 1
+#SBATCH -n ${thread}
+echo date
+source /public/home/2022122/xugang/bashrc
+bowtie2 -p  ${thread} --end-to-end --sensitive-local -x ${db} -1 $output/a0-clean/$name.1.fq.gz -2 $output/a0-clean/$name.2.fq.gz  --un-conc-gz  $output/$file/${name}.decontaminate.fq.gz -S $output/$file/${name}.sam >  $output/$file/${name}.txt 2>  $output/$file/${name}.txt
+
+" > a1.mapf.${name}.sh
 }
 
 samtools(){
 #convert sam to bam
 #sort bam
 #build index
-echo '' 
+name=$1
+file='a2-bam'
+[[ -d $output/${file}/log ]] || mkdir -p $output/${file}/log
+echo -e "#!/bin/bash
+#SBATCH -o ${output}/$file/log/${name}.%j.out
+#SBATCH -e ${output}/$file/log/${name}.%j.error
+#SBATCH --partition=${node}
+#SBATCH -J 2${name}
+#SBATCH -N 1
+#SBATCH -n ${thread}
+echo date
+source /public/home/2022122/xugang/bashrc
+
+samtools view -F 4 --threads ${thread} -bS $output/a1-map/${name}.sam > $output/$file/${name}.bam
+samtools sort --threads ${thread} $output/$file/${name}.bam > $output/$file/${name}.sort.bam 
+samtools index $output/$file/${name}.sort.bam
+rm  $output/$file/${name}.bam
+" > a2.bam.${name}.sh 
 }
 ```
 
