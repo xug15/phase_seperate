@@ -70,13 +70,18 @@ bowtie2 -p  ${thread} --end-to-end --sensitive-local -x ${db} -1 $output/a0-clea
 
 " > a1.mapf.${name}.sh
 }
+```
 
-samtools(){
+```sh
+samtobam(){
 #convert sam to bam
 #sort bam
 #build index
 name=$1
+name2=$2
 file='a2-bam'
+#remove background file
+((counter++))
 [[ -d $output/${file}/log ]] || mkdir -p $output/${file}/log
 echo -e "#!/bin/bash
 #SBATCH -o ${output}/$file/log/${name}.%j.out
@@ -88,12 +93,17 @@ echo -e "#!/bin/bash
 echo date
 source /public/home/2022122/xugang/bashrc
 
-samtools view -F 4 --threads ${thread} -bS $output/a1-map/${name}.sam > $output/$file/${name}.bam
+samtools view -bhS -q 30 --threads ${thread} -bS $output/a1-bowtie2/${name}.sam > $output/$file/${name}.bam
 samtools sort --threads ${thread} $output/$file/${name}.bam > $output/$file/${name}.sort.bam 
-samtools index $output/$file/${name}.sort.bam
 rm  $output/$file/${name}.bam
-" > a2.bam.${name}.sh 
+mv $output/$file/${name}.sort.bam $output/$file/${name2}.unique.bam
+samtools index $output/$file/${name2}.unique.bam
+" > a2.samtobam.$counter.${name}.sh 
 }
+samtobam col_1_Input dap-smxl7-r1-input
+samtobam col_1_IP dap-smxl7-r1-ip
+samtobam col_2_Input dap-smxl7-r2-input
+samtobam col_2_IP dap-smxl7-r2-ip
 ```
 
 ## Using the macs2 software to call peaks.
@@ -202,12 +212,13 @@ conda run -n deeptool bamCompare -b1 ${output}/a2-bam/${name1}.bam -b2  $output/
 
 ">a4.$counter.$name1.sh
 }
-bigcomparef col_1_IP col_1_Input 
-bigcomparef col_2_IP col_2_Input
+bigcomparef dap-smxl7-r1-ip dap-smxl7-r1-input
+bigcomparef dap-smxl7-r2-ip dap-smxl7-r2-input
 bigcomparef M_2_1_IP.unique M_2_1_input.unique
 bigcomparef M_1_1_IP.unique M_1_1_input.unique
 bigcomparef WT_2_1_IP.unique WT_2_1_input.unique
 bigcomparef WT_1_1_IP.unique WT_1_1_input.unique
+
 ```
 
 ## Compare the bigwig files by deeptools bigwigCompare funciton.
