@@ -346,6 +346,8 @@ plotprofile M_2_1_IP.unique.vs.M_1_1_IP.unique
 plotprofile WT_2_1_IP.unique.vs.WT_1_1_IP.unique
 plotprofile wt_smxl7_h3k27me2
 plotprofile mut_smxl7_h3k27me2 
+plotprofile col_1_IP.M_2_1_IP.unique.vs.M_1_1_IP.unique.WT_2_1_IP.unique.vs.WT_1_1_IP.unique
+
 ```
 
 ## Plot the heatmap of Chip-seq signal coverage in the gene body or reference points.
@@ -378,7 +380,7 @@ plotheatmap WT_2_1_IP.unique.vs.WT_1_1_IP.unique
 plotheatmap M_2_1_IP.unique.vs.M_1_1_IP.unique
 plotheatmap wt_smxl7_h3k27me2
 plotheatmap mut_smxl7_h3k27me2 
-
+plotheatmap col_1_IP.M_2_1_IP.unique.vs.M_1_1_IP.unique.WT_2_1_IP.unique.vs.WT_1_1_IP.unique
 ```
 
 ## Impletement the two replicates peaks.
