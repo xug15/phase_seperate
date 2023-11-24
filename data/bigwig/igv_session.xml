@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Session genome="tair10" hasGeneTrack="false" hasSequenceTrack="false" locus="All" nextAutoscaleGroup="5" version="8">
+    <Resources>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\M_h3k27me3.h3.bw" path="M_h3k27me3.h3.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\mRNA.mut_1.bw" path="mRNA.mut_1.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\ATAC_oe_SMXL7_1.bw" path="ATAC_oe_SMXL7_1.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\mRNA.wt_3.bw" path="mRNA.wt_3.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\mRNA.oe_3.bw" path="mRNA.oe_3.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\ATAC_WT_2.bw" path="ATAC_WT_2.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\ATAC_mut_SMXL7_1.bw" path="ATAC_mut_SMXL7_1.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\ATAC_WT_1.bw" path="ATAC_WT_1.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\wt_h3k27me3.h3.bw" path="wt_h3k27me3.h3.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\mRNA.mut_2.bw" path="mRNA.mut_2.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\mRNA.wt_1.bw" path="mRNA.wt_1.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\mRNA.oe_1.bw" path="mRNA.oe_1.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\dap-smxl7-r1.rmbg.bw" path="dap-smxl7-r1.rmbg.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\oe_h3k27me3.h3.bw" path="oe_h3k27me3.h3.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\mRNA.oe_2.bw" path="mRNA.oe_2.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\ATAC_mut_SMXL7_2.bw" path="ATAC_mut_SMXL7_2.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\ATAC_oe_SMXL7_2.bw" path="ATAC_oe_SMXL7_2.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\mRNA.wt_2.bw" path="mRNA.wt_2.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\mRNA.mut_3.bw" path="mRNA.mut_3.bw"/>
+        <Resource name="D:\a-document\github\phase_seperate\data\bigwig\dap-smxl7-r2.rmbg.bw" path="dap-smxl7-r2.rmbg.bw"/>
+    </Resources>
+    <Panel height="1600" name="DataPanel" width="2508">
+        <Track altColor="0,0,0" attributeKey="dap-smxl7-r1.rmbg.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="0,0,0" displayMode="EXPANDED" fontSize="20" height="80" id="D:\a-document\github\phase_seperate\data\bigwig\dap-smxl7-r1.rmbg.bw" name="dap-seq SMXL7 rep1" renderer="LINE_PLOT" showDataRange="false" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="2.0" minimum="-0.5" type="LINEAR"/>
+        </Track>
+        <Track attributeKey="dap-smxl7-r2.rmbg.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="0,0,0" colorScale="ContinuousColorScale;0.0;-0.3635839819908142;0.0;1.49970543384552;247,247,6;255,255,255;0,0,178" displayMode="EXPANDED" fontSize="20" height="80" id="D:\a-document\github\phase_seperate\data\bigwig\dap-smxl7-r2.rmbg.bw" name="dap-seq SMXL7 rep2" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="2.0" minimum="-0.5" type="LINEAR"/>
+        </Track>
+        <Track altColor="190,49,68" attributeKey="wt_h3k27me3.h3.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="190,49,68" colorScale="ContinuousColorScale;0.0;-0.1312999427318573;0.0;0.7427008748054504;247,247,6;255,255,255;197,232,152" displayMode="EXPANDED" fontSize="20" height="80" id="D:\a-document\github\phase_seperate\data\bigwig\wt_h3k27me3.h3.bw" name="WT log2(H3K27me3/H3)" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="0.5" minimum="-0.5" type="LINEAR"/>
+        </Track>
+        <Track altColor="41,173,178" attributeKey="M_h3k27me3.h3.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="41,173,178" displayMode="EXPANDED" fontSize="20" height="80" id="D:\a-document\github\phase_seperate\data\bigwig\M_h3k27me3.h3.bw" name="Mut SMXL7 log2(h3k27me3/h3)" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="0.5" minimum="-0.5" type="LINEAR"/>
+        </Track>
+        <Track altColor="7,102,173" attributeKey="oe_h3k27me3.h3.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="7,102,173" displayMode="EXPANDED" fontSize="20" height="80" id="D:\a-document\github\phase_seperate\data\bigwig\oe_h3k27me3.h3.bw" name="OE SMXL7 log2(H3K27me3/H3)" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="0.5" minimum="-0.5" type="LINEAR"/>
+        </Track>
+        <Track altColor="43,102,139" attributeKey="ATAC_WT_1.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="43,102,139" colorScale="ContinuousColorScale;0.0;33.857872009277344;255,255,255;0,0,178" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\ATAC_WT_1.bw" name="ATAC-seq WT rep1" renderer="LINE_PLOT" showDataRange="false" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="30.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="43,102,139" attributeKey="ATAC_WT_2.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="43,102,139" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\ATAC_WT_2.bw" name="ATAC-seq WT rep2" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="30.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="100,163,205" attributeKey="ATAC_mut_SMXL7_1.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="100,163,205" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\ATAC_mut_SMXL7_1.bw" name="ATAC-seq mut SMXL7 rep1" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="30.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="100,163,205" attributeKey="ATAC_mut_SMXL7_2.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="100,163,205" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\ATAC_mut_SMXL7_2.bw" name="ATAC-seq mut SMXL7 rep2" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="30.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="152,173,193" attributeKey="ATAC_oe_SMXL7_1.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="152,173,193" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\ATAC_oe_SMXL7_1.bw" name="ATAC-seq OE SMXL7 rep1" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="30.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="152,173,193" attributeKey="ATAC_oe_SMXL7_2.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="152,173,193" colorScale="ContinuousColorScale;0.0;30.0;255,255,255;0,0,178" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\ATAC_oe_SMXL7_2.bw" name="ATAC-seq OE SMXL7 rep2" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="30.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="0,0,178" attributeKey="mRNA.wt_1.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="95,173,65" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\mRNA.wt_1.bw" name="mRNA WT rep1" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="120.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="0,0,178" attributeKey="mRNA.wt_2.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="95,173,65" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\mRNA.wt_2.bw" name="mRNA WT rep2" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="120.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track altColor="0,0,178" attributeKey="mRNA.wt_3.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="95,173,65" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\mRNA.wt_3.bw" name="mRNA WT rep3" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="120.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track attributeKey="mRNA.mut_1.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="191,174,72" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\mRNA.mut_1.bw" name="mRNA mut rep1" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="120.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track attributeKey="mRNA.mut_2.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="191,174,72" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\mRNA.mut_2.bw" name="mRNA mut rep2" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="120.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track attributeKey="mRNA.mut_3.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="191,174,72" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\mRNA.mut_3.bw" name="mRNA mut rep3" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="120.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track attributeKey="mRNA.oe_1.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="45,147,108" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\mRNA.oe_1.bw" name="mRNA OE rep1" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="120.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track attributeKey="mRNA.oe_2.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="45,147,108" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\mRNA.oe_2.bw" name="mRNA OE rep2" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="120.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+        <Track attributeKey="mRNA.oe_3.bw" autoScale="false" clazz="org.broad.igv.track.DataSourceTrack" color="45,147,108" displayMode="EXPANDED" fontSize="20" id="D:\a-document\github\phase_seperate\data\bigwig\mRNA.oe_3.bw" name="mRNA OE rep3" renderer="LINE_PLOT" visible="true" windowFunction="mean">
+            <DataRange baseline="0.0" drawBaseline="true" flipAxis="false" maximum="120.0" minimum="0.0" type="LINEAR"/>
+        </Track>
+    </Panel>
+    <HiddenAttributes>
+        <Attribute name="DATA FILE"/>
+        <Attribute name="DATA TYPE"/>
+    </HiddenAttributes>
+</Session>

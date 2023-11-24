@@ -184,9 +184,25 @@ source /public/home/2022122/xugang/bashrc
 conda run -n deeptool bamCoverage -b ${output}/a2-bam/${name1}.bam -of bigwig -o ${output}/a4-bw/${name2}.bw -p $((thread)) --ignoreDuplicates --binSize 1000 --normalizeUsing RPKM
 
 ">a5.$counter.$name1.sh
+
+bamtobw ATAC_mut_smxl7_1.unique ATAC_mut_SMXL7_1
+bamtobw ATAC_mut_smxl7_2.unique ATAC_mut_SMXL7_2
+bamtobw ATAC_oe_smxl7_1.unique ATAC_oe_SMXL7_1
+bamtobw ATAC_oe_smxl7_2.unique ATAC_oe_SMXL7_2
+bamtobw ATAC_WT_1.unique ATAC_WT_1
+bamtobw ATAC_WT_2.unique ATAC_WT_2
+
+bamtobw mRNA.M_1.sorted mRNA.mut_1
+bamtobw mRNA.M_2.sorted mRNA.mut_2
+bamtobw mRNA.M_3.sorted mRNA.mut_3
+bamtobw mRNA.O_1.sorted mRNA.oe_1
+bamtobw mRNA.O_2.sorted mRNA.oe_2
+bamtobw mRNA.O_3.sorted mRNA.oe_3
+bamtobw mRNA.WT_1.sorted mRNA.wt_1
+bamtobw mRNA.WT_2.sorted mRNA.wt_2
+bamtobw mRNA.WT_3.sorted mRNA.wt_3
 }
-bamtobw WT_2_1_IP.unique wt_smxl7_h3k27me2
-bamtobw M_2_1_IP.unique mut_smxl7_h3k27me2
+
 
 ```
 ## remove background signal, and generate the output file with bigwig file format.  
@@ -361,7 +377,7 @@ echo "#!/bin/bash
 #SBATCH -n ${thread}
 source /public/home/2022122/xugang/bashrc
 
-conda run -n deeptool computeMatrix reference-point  --referencePoint TSS -R ${bed} -S ${output}/a4-bw/${name1}.log2.bw ${output}/a4-bw/${name2}.log2.bw ${output}/a4-bw/${name3}.log2.bw --smartLabels -p $((thread)) -b 3000 -a 3000  --skipZeros -o $output/a5-matrix/${name4}.point.gz --outFileSortedRegions $output/a5-matrix/computeMatrix.point_${name4}.point.bed
+conda run -n deeptool computeMatrix reference-point  --referencePoint TSS -R ${bed} -S ${output}/a4-bw/${name1}.bw ${output}/a4-bw/${name2}.bw ${output}/a4-bw/${name3}.bw --smartLabels -p $((thread)) -b 3000 -a 3000  --skipZeros -o $output/a5-matrix/${name4}.point.gz --outFileSortedRegions $output/a5-matrix/computeMatrix.${name4}.point.bed
 ">a5.computematrix.point.$counter.${name4}.sh
 }
 computmatrixpoint_multi wt_h3k27me3.h3 M_h3k27me3.h3 oe_h3k27me3.h3 wt.m.oe.h3k27.h3
@@ -423,8 +439,8 @@ echo "#!/bin/bash
 #SBATCH -n ${thread}
 source /public/home/2022122/xugang/bashrc
 
-conda run -n deeptool plotHeatmap --heatmapWidth 12 --heatmapHeight 50 --zMax 10 --colorList \" #4393C3,white,#A50026 \" --missingDataColor white -m  $output/a5-matrix/${name1}.gz -out $output/a7-heatmap/${name1}_Heatmap.eps --boxAroundHeatmaps no
-conda run -n deeptool plotHeatmap --heatmapWidth 12 --heatmapHeight 50 --zMax 10 --colorList \" #4393C3,white,#A50026 \" --missingDataColor white -m  $output/a5-matrix/${name1}.gz -out $output/a7-heatmap/${name1}_Heatmap.pdf --boxAroundHeatmaps no
+conda run -n deeptool plotHeatmap --heatmapWidth 12 --heatmapHeight 50 --zMax 2 --colorList \" #4393C3,white,#A50026 \" --missingDataColor white -m  $output/a5-matrix/${name1}.gz -out $output/a7-heatmap/${name1}_Heatmap.eps --boxAroundHeatmaps no
+conda run -n deeptool plotHeatmap --heatmapWidth 12 --heatmapHeight 50 --zMax 2 --colorList \" #4393C3,white,#A50026 \" --missingDataColor white -m  $output/a5-matrix/${name1}.gz -out $output/a7-heatmap/${name1}_Heatmap.pdf --boxAroundHeatmaps no
 ">a7.heatmap.$counter.$name1.sh
 }
 plotheatmap wt.m.oe.h3k27.h3
