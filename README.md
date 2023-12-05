@@ -732,10 +732,14 @@ gzip -f hic_WT_2_2.fq
 
 ```
 ### Reads were mapped tair genome with HiC-pro software.
+
+### How can I generate the list of restriction fragments after genome digestion ?
 ```sh
-
-
+# site https://github.com/nservant/HiC-Pro
+# https://nservant.github.io/HiC-Pro/UTILS.html#utils
+/public/home/2022122/xugang/app/HiC-Pro/HiC-Pro-master/bin/utils/digest_genome.py -r hindiii dpnii -o /public/home/2022122/xugang/project/tair10/tair10.hindiii_dpnii.bed /public/home/2022122/xugang/project/tair10/tair10.fa 
 ```
+
 
 
 
