@@ -1,7 +1,7 @@
 # phase_seperate
 
 ## Content
-[Sample information](#Sample-information)  
+* [Sample information](#Sample-information)  
 ### CHIP-seq, ATAC-seq
 * [Set up environment variables](#1-set-up-environment-variables)   
 ### mRNA-seq
