@@ -1,4 +1,10 @@
 # phase_seperate
+
+## Content
+[Sample information]()  
+[Set up environment variables]()  
+[Hi-C seq](hic.md)
+
 ## Sample information 
 M-1-1    突变体 H3 ChIP-seq (SMX7)  
 M-2-1    突变体 H3K27me3 ChIP-seq (SMX7)  
@@ -21,6 +27,21 @@ ATAC_O_2   过表达重复 (SMX7)
 ATAC_WT_1 野生型 (SMX7)  
 ATAC_WT_2 野生型重复 (SMX7)  
 
+## 0. set conda, pip, mamba
+```sh
+
+ pip install --upgrade --force-reinstall mamba
+ 
+
+```
+```r
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("edgeR")
+
+```
+
 ## 1. Set up environment variables.
 ```sh
 db=/public/home/2022122/xugang/project/tair10/tair10.bowtie2
@@ -37,6 +58,7 @@ datapath2=`pwd`/rawdata
 output=`pwd`/output
 thread=50
 partnum=6
+
 #node=Fnode2
 #node=Fnode1
 node=Cnode
@@ -475,7 +497,75 @@ bedtools intersect -a ${na1} -b /public/home/2022122/xugang/project/tair10/tair1
 bedtools intersect -a ${na1} -b /public/home/2022122/xugang/project/tair10/tair10.exon.bed -wa -v > ${na1}.r1.bed
 ```
 
+## Calculate the gene count.
 
+```sh
+genecount(){
+gtf=/public/home/2022122/xugang/project/tair10/tair10.gtf
+name=$1
+thread=2
+#plot peak heatmap.
+log=$output/a9-genecount/log
+[[ -d $log ]] || mkdir -p  $log
+#remove background file
+((counter++))
+name1=$1
+
+[[ -d $output/a9-genecount/ ]] || mkdir -p $output/a9-genecount/  
+
+echo "#!/bin/bash
+#SBATCH -o $log/${name1}.%j.out
+#SBATCH -e $log/${name1}.%j.error
+#SBATCH --partition=${node}
+#SBATCH -J 5${1}
+#SBATCH -N 1
+#SBATCH -n ${thread}
+source /public/home/2022122/xugang/bashrc
+
+
+samtools view $output/a2-bam/${name}.sorted.bam | gfold count -ann ${gtf} -tag stdin -o $output/a9-genecount/${name}.read_cnt  >$output/a9-genecount/${name}.err
+
+">a9.genecount.$counter.$name.sh
+}
+genecount mRNA.M_1
+genecount mRNA.M_2
+genecount mRNA.M_3
+genecount mRNA.O_1
+genecount mRNA.O_2
+genecount mRNA.O_3
+genecount mRNA.WT_1
+genecount mRNA.WT_2
+genecount mRNA.WT_3
+```
+```sh
+mergegf(){
+for i in `ls $output/a9-genecount/ |grep .read_cnt$`;
+do
+file=`echo $i| cut -f 2 -d '.'`;
+echo -e "gene\t$file">$output/a9-genecount/$i.txt ;
+cut -f 1,3 $output/a9-genecount/$i >> $output/a9-genecount/$i.txt;
+done
+
+cd $output/a9-genecount
+file=(`ls |grep .read_cnt.txt$`);
+begin1=${file[0]};
+echo "join $begin1"
+cp $begin1 tmp;
+echo $begin1;
+file2=("${file[@]:1}");
+echo ${file2[0]};
+for i in ${file2[@]};
+do echo $i;
+join tmp $i > tmp2
+mv tmp2 tmp
+done
+mv tmp merge.gene.tsv
+sed -i 's/ \+/\t/g' merge.gene.tsv
+rm *.read_cnt.txt
+cd -
+}
+mergegf
+```
 
 
 
