@@ -1,9 +1,14 @@
 # phase_seperate
 
 ## Content
-[Sample information]()  
-[Set up environment variables]()  
-[Hi-C seq](hic.md)
+[Sample information](#Sample-information)  
+### CHIP-seq, ATAC-seq
+* [Set up environment variables](#1-set-up-environment-variables)   
+### mRNA-seq
+* [Calculate the gene count.](#calculate-the-gene-count)  
+* [Differential expression gene](script/gene.df.r)   
+### Hi-C seq
+* [Hi-C seq](hic.md)
 
 ## Sample information 
 M-1-1    突变体 H3 ChIP-seq (SMX7)  
