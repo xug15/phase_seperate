@@ -15,7 +15,11 @@ Hi-C技术主要将空间结构临近的DNA片段进行交联，并将交联的D
 
 
 
-1、用甲醛对细胞进行固定，使DNA与蛋白，蛋白与蛋白之间进行交联；2、进行酶切（如Hind III等限制性内切酶），使交联两侧产生粘性末端；3、末端修复，引入生物素标记，连接；4、解交联，使DNA和蛋白、蛋白和蛋白分开，提取DNA，打断，捕获带有生物素标记片段，进行建库；5、测序。
+1、用甲醛对细胞进行固定，使DNA与蛋白，蛋白与蛋白之间进行交联；  
+2、进行酶切（如Hind III等限制性内切酶），使交联两侧产生粘性末端；  
+3、末端修复，引入生物素标记，连接；  
+4、解交联，使DNA和蛋白、蛋白和蛋白分开，提取DNA，打断，捕获带有生物素标记片段，进行建库；  
+5、测序。
 
 
 ## 二、技术优势
@@ -33,12 +37,12 @@ Hi-C技术主要将空间结构临近的DNA片段进行交联，并将交联的D
 
 7. 该物种的三维基因结构、染色体互作及动态变化可以解析啦~（从基因到表观！全方位解析）
 
-8.周期短。
+8. 周期短。
 
 总结：快（周期短）、准（准确性高）、省（单个体）
 
 ## 三、应用：
-1．染色体跨度的单倍型图谱构建
+1. 染色体跨度的单倍型图谱构建
 
 为疾病风险预测提供思路
 
@@ -46,19 +50,19 @@ Hi-C技术主要将空间结构临近的DNA片段进行交联，并将交联的D
 
 为农业动植物经济性状连锁标记及基因组进化奠定基础
 
-2．探索基因组的3D结构
+2. 探索基因组的3D结构
 
 有助于了解基因组折叠对基因表达的影响
 
 有助于了解基因组三维结构对细胞发育，分化及细胞命运的决定
 
-3．开发调控基因的DNA元件
+3. 开发调控基因的DNA元件
 
 揭示基因组远程调控元件介导的分子网络
 
 通过分析调控元件空间互作热点，开发潜在的药物作用靶点
 
-4．Hi-C辅助基因组组装
+4. Hi-C辅助基因组组装
 
 辅助动植物基因组组装
 
@@ -83,7 +87,7 @@ Hi-C技术主要将空间结构临近的DNA片段进行交联，并将交联的D
 构建了高质量的枇杷基因组。（题目：Chromosome-level genome assembly and annotation of the loquat (Eriobotrya japonica) genome 期刊：Gigascience）
 
 ## 四、Hi-C分析常用工具
-数据标准化：
+### 数据标准化：
 
 1. HiCNorm
 
@@ -97,37 +101,37 @@ https://mirnylab.bitbucket.io/hiclib/index.html
 
 https://github.com/nservant/HiC-Pro
 
-TAD鉴定
+### TAD鉴定
 
-1.HiCseg:Models the uncertainty in Hi‐C data
+1. HiCseg:Models the uncertainty in Hi‐C data
 
 https://cran.r-project.org/web/packages/HiCseg/index.html
 
-2. TADbit
+2. TADbit
 
 https://github.com/3DGenomes/TADbit
 
-3.DomainCaller
+3. DomainCaller
 
 http://chromosome.sdsc.edu/mouse/hi-c/download.html
 
-4. InsulationScore:Robust to different sequencing depth;
+4. InsulationScore:Robust to different sequencing depth;
 
 can detect dynamics of TAD boundaries
 
 https://github.com/dekkerlab/crane-nature-2015
 
-5. Arrowhead:High computational efficiency with
+5. Arrowhead:High computational efficiency with
 
-dynamic programming
+### dynamic programming
 
 https://github.com/theaidenlab/juicer/wiki/Download
 
-6. TADtree
+6. TADtree
 
 compbio.cs.brown.edu/projects/tadtree/
 
-7. Armatus:TAD calling robust in different resolutions
+7. Armatus:TAD calling robust in different resolutions
 
 https://github.com/kingsfordgroup/armatus
 
@@ -135,49 +139,46 @@ https://github.com/kingsfordgroup/armatus
 
 http://zhoulab.usc.edu/TopDom/
 
-交互片段鉴定（interaction）
+### 交互片段鉴定（interaction）  
 
-1. Fit-Hi-C:Accurate background model using
-
+1. Fit-Hi-C: Accurate background model using
 non-parametric spline
 
 http://noble.gs.washington.edu/proj/fit-hi-c
 
-2. GOTHiC :Models contact-frequency uncertainty
-
-as binomial distribution
+2. GOTHiC: Models contact-frequency uncertainty as binomial distribution
 
 http://bioconductor.org/packages/release/bioc/html/GOTHiC.html
 
-3. HOMER
+3. HOMER
 
 homer.ucsd.edu/homer/download.html
 
-4. HIPPIE
+4. HIPPIE
 
 wanglab.pcbi.upenn.edu/hippie
 
-5. diffHic
+5. diffHic
 
 https://bioconductor.org/packages/release/bioc/html/diffHic.html
 
-6.HiCCUPS:Designed for high-resolution Hi‐C data
+6. HiCCUPS:Designed for high-resolution Hi‐C data
 
 https://github.com/theaidenlab/juicer/wiki/Download
 
-3D构象：
+### 3D构象：  
 
 1. 3D-GNOME
 
 https://bitbucket.org/3dome/3dome_mmc
 
-2.Tadbit
+2. Tadbit
 
 https://github.com/3DGenomes/tadbit
 
-可视化：
+### 可视化：
 
-HiCPlotter
+1. HiCPlotter
 
 https://github.com/kcakdemir/HiCPlotter
 

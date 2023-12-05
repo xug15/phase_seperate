@@ -1,4 +1,4 @@
-# phase_seperate
+# phase seperate project
 
 ## Content
 * [Sample information](#Sample-information)  
