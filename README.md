@@ -124,7 +124,13 @@ fastqcf mod.WT-2_1.fq.gz rawdata/modification/
 fastqcf mod.WT-2_2.fq.gz rawdata/modification/
 fastqcf mod.WT-3_1.fq.gz rawdata/modification/
 fastqcf mod.WT-3_2.fq.gz rawdata/modification/
-
+#
+fastqcf hic_mut_2_1.fq.gz rawdata/hic-seq
+fastqcf hic_mut_2_2.fq.gz rawdata/hic-seq
+fastqcf hic_oe_smxl7_2_1.fq.gz rawdata/hic-seq
+fastqcf hic_oe_smxl7_2_2.fq.gz rawdata/hic-seq
+fastqcf hic_WT_2_1.fq.gz rawdata/hic-seq
+fastqcf hic_WT_2_2.fq.gz rawdata/hic-seq
 ```
 
 
@@ -671,11 +677,11 @@ cd HiC-Pro-master/
 conda env create -f environment.yml -p hicpro
 conda activate hicpro
 vi config-install.txt
-#PREFIX =/public/home/2022122/xugang/app/HiC-Pro
+#PREFIX = /public/home/2022122/xugang/app/HiC-Pro-master
 make configure
 make install
 #export path
-export PATH="/public/home/2022122/xugang/app/HiC-Pro/HiC-Pro-master/bin:"$PATH
+export PATH="/public/home/2022122/xugang/app/HiC-Pro-master/bin:"$PATH
 
 ```
 ### The raw file fq.gz have unregnoize characters.
@@ -730,7 +736,25 @@ gzip -f hic_oe_smxl7_2_2.fq
 gzip -f hic_WT_2_1.fq
 gzip -f hic_WT_2_2.fq
 
+cp  hic_*gz /public/home/2022122/xugang/project/yaoruifeng/rawdata/hic-seq
+cd /public/home/2022122/xugang/project/yaoruifeng/rawdata/hic-seq
+mv hic_mut_2_1.fq.gz hic_mut_R1.fastq.gz
+mv hic_mut_2_2.fq.gz hic_mut_R2.fastq.gz
+mv hic_oe_smxl7_2_1.fq.gz hic_oe_R1.fastq.gz
+mv hic_oe_smxl7_2_2.fq.gz hic_oe_R2.fastq.gz
+mv hic_WT_2_1.fq.gz hic_wt_R1.fastq.gz 
+mv hic_WT_2_2.fq.gz hic_wt_R2.fastq.gz 
+mkdir -p mydata/mut
+mkdir -p mydata/oe
+mkdir -p mydata/wt
+cp hic_mut* mydata/mut
+cp hic_oe* mydata/oe
+cp hic_wt* mydata/wt
+
 ```
+
+
+
 ### Reads were mapped tair genome with HiC-pro software.
 
 ### How can I generate the list of restriction fragments after genome digestion ?
@@ -739,6 +763,148 @@ gzip -f hic_WT_2_2.fq
 # https://nservant.github.io/HiC-Pro/UTILS.html#utils
 /public/home/2022122/xugang/app/HiC-Pro/HiC-Pro-master/bin/utils/digest_genome.py -r hindiii dpnii -o /public/home/2022122/xugang/project/tair10/tair10.hindiii_dpnii.bed /public/home/2022122/xugang/project/tair10/tair10.fa 
 ```
+### Generate the chromosome's file
+```sh
+cut -f 1,2 /public/home/2022122/xugang/project/tair10/tair10.fa.fai > /public/home/2022122/xugang/project/tair10/tair10.chromesize
+# The output file
+/public/home/2022122/xugang/project/tair10/tair10.chromesize
+```
+
+### Run HiC-Pro
+```sh
+mkdir -p /public/home/2022122/xugang/project/yaoruifeng/output/a10.hicseq/log
+
+```
+### Write the below content into the /public/home/2022122/xugang/project/yaoruifeng/hic.txt
+```sh
+# Please change the variable settings below if necessary
+
+#########################################################################
+## Paths and Settings  - Do not edit !
+#########################################################################
+
+TMP_DIR = tmp
+LOGS_DIR = logs
+BOWTIE2_OUTPUT_DIR = bowtie_results
+MAPC_OUTPUT = hic_results
+RAW_DIR = rawdata
+
+#######################################################################
+## SYSTEM AND SCHEDULER - Start Editing Here !!
+#######################################################################
+N_CPU = 50
+SORT_RAM = 50000M
+LOGFILE = hicpro.log
+
+JOB_NAME =
+JOB_MEM =
+JOB_WALLTIME =
+JOB_QUEUE =
+JOB_MAIL =
+
+#########################################################################
+## Data
+#########################################################################
+PAIR1_EXT = _R1
+PAIR2_EXT = _R2
+
+#######################################################################
+## Alignment options
+#######################################################################
+
+MIN_MAPQ = 10
+
+BOWTIE2_IDX_PATH = /public/home/2022122/xugang/project/tair10/
+BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
+BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder
+
+#######################################################################
+## Annotation files
+#######################################################################
+
+REFERENCE_GENOME = tair10.bowtie2
+GENOME_SIZE = /public/home/2022122/xugang/project/tair10/tair10.chromesize
+
+#######################################################################
+## Allele specific analysis
+#######################################################################
+
+ALLELE_SPECIFIC_SNP =
+
+#######################################################################
+## Capture Hi-C analysis
+#######################################################################
+
+CAPTURE_TARGET =
+REPORT_CAPTURE_REPORTER = 1
+
+#######################################################################
+## Digestion Hi-C
+#######################################################################
+
+GENOME_FRAGMENT = /public/home/2022122/xugang/project/tair10/tair10.hindiii_dpnii.bed
+LIGATION_SITE = AAGCTAGCTT
+MIN_FRAG_SIZE =
+MAX_FRAG_SIZE =
+MIN_INSERT_SIZE =
+MAX_INSERT_SIZE =
+
+#######################################################################
+## Hi-C processing
+#######################################################################
+
+MIN_CIS_DIST =
+GET_ALL_INTERACTION_CLASSES = 1
+GET_PROCESS_SAM = 0
+RM_SINGLETON = 1
+RM_MULTI = 1
+RM_DUP = 1
+
+#######################################################################
+## Contact Maps
+#######################################################################
+
+BIN_SIZE = 20000 40000 150000 500000 1000000
+MATRIX_FORMAT = upper
+
+#######################################################################
+## Normalization
+#######################################################################
+MAX_ITER = 100
+FILTER_LOW_COUNT_PERC = 0.02
+FILTER_HIGH_COUNT_PERC = 0
+EPS = 0.1
+```
+
+```sh
+#conda activate /public/home/2022122/xugang/app/HiC-Pro-master/hicpro
+#plot peak heatmap.
+hicf(){
+log=$output/a10.hicseq/log
+[[ -d $log ]] || mkdir -p  $log
+#remove background file
+((counter++))
+name1=$1
+echo "#!/bin/bash
+#SBATCH -o $log/${name1}.%j.out
+#SBATCH -e $log/${name1}.%j.error
+#SBATCH --partition=${node}
+#SBATCH -J 5${1}
+#SBATCH -N 1
+#SBATCH -n ${thread}
+source /public/home/2022122/xugang/bashrc
+rm -rf /public/home/2022122/xugang/project/yaoruifeng/output/a10.hicseq/Hi-C
+/public/home/2022122/xugang/app/HiC-Pro-master/bin/HiC-Pro -i rawdata/hic-seq/mydata -o ${output}/a10.hicseq/Hi-C -c hic.txt
+">a10.hic.$counter.$name1.sh
+
+}
+hicf
+
+```
+   MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_DATA_FOLDER -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+
+
+
 
 
 
