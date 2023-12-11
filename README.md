@@ -892,13 +892,86 @@ hicf
 ```sh
 # install reads processed.
 conda install trim-galore
+# Check that cutadapt is installed
+cutadapt --version
+# Check that FastQC is installed
+fastqc -v
+# Install Trim Galore
+curl -fsSL https://github.com/FelixKrueger/TrimGalore/archive/0.6.10.tar.gz -o trim_galore.tar.gz
+tar xvzf trim_galore.tar.gz
+# Run Trim Galore
+/public/home/2022122/xugang/app/TrimGalore-0.6.10/trim_galore
 
+```
+### Install Bismark.
+```sh
 # install Bismark.
 wget https://github.com/FelixKrueger/Bismark/archive/refs/tags/v0.24.2.tar.gz
 
+tar -xvzf  TrimGalore-0.6.10.tar.gz
+
+vi ~/xugang/bashrc
+#/public/home/2022122/xugang/app/Bismark-0.24.2:\
+
+```
+### Prepare the genome file
+```sh
+bismark_genome_preparation /public/home/2022122/xugang/project/tair10/bismark
+
+```
+
+### Run Bismark.
+```sh
+bismarkf(){
+#plot peak heatmap.
+log=$output/a11-bismark/log
+[[ -d $log ]] || mkdir -p  $log
+#remove background file
+((counter++))
+path=$1
+name1=$2
+name2=$3
+name=$4
+
+[[ -d $output/a9-genecount/ ]] || mkdir -p $output/a9-genecount/  
+
+echo "#!/bin/bash
+#SBATCH -o $log/${name1}.%j.out
+#SBATCH -e $log/${name1}.%j.error
+#SBATCH --partition=${node}
+#SBATCH -J 5${1}
+#SBATCH -N 1
+#SBATCH -n ${thread}
+source /public/home/2022122/xugang/bashrc
+
+
+bismark --parallel ${thread} -o $output/a11-bismark/${name} /public/home/2022122/xugang/project/tair10/bismark -1 $path/$name1 -2 $path/$name2
+
+">a9.genecount.$counter.$name.sh
+}
+
+bismarkf rawdata/modification mod.A-1_1.fq.gz mod.A-1_2.fq.gz mod.A-1 
+bismarkf rawdata/modification mod.A-2_1.fq.gz mod.A-2_2.fq.gz mod.A-2
+bismarkf rawdata/modification mod.A-3_1.fq.gz mod.A-3_2.fq.gz mod.A-3
+
+bismarkf rawdata/modification mod.Mu-1_1.fq.gz mod.Mu-1_2.fq.gz mod.Mu-1
+bismarkf rawdata/modification mod.Mu-2_1.fq.gz mod.Mu-2_2.fq.gz mod.Mu-2
+bismarkf rawdata/modification mod.Mu-3_1.fq.gz mod.Mu-3_2.fq.gz mod.Mu-3
+
+bismarkf rawdata/modification mod.OE-1_1.fq.gz mod.OE-1_2.fq.gz mod.OE-1
+bismarkf rawdata/modification mod.OE-2_1.fq.gz mod.OE-2_2.fq.gz mod.OE-2
+bismarkf rawdata/modification mod.OE-3_1.fq.gz mod.OE-3_2.fq.gz mod.OE-3
+
+bismarkf rawdata/modification mod.WT-1_1.fq.gz mod.WT-1_2.fq.gz mod.WT-1
+bismarkf rawdata/modification mod.WT-2_1.fq.gz mod.WT-2_2.fq.gz mod.WT-2
+bismarkf rawdata/modification mod.WT-3_1.fq.gz mod.WT-3_2.fq.gz mod.WT-3
+```
+
+
+```sh
+
 # install MethylDackel.
 wget https://github.com/dpryan79/MethylDackel/archive/refs/tags/0.6.1.tar.gz
-
 
 
 ```
