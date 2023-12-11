@@ -945,9 +945,9 @@ echo "#!/bin/bash
 source /public/home/2022122/xugang/bashrc
 
 
-bismark --parallel ${thread} -o $output/a11-bismark/${name} /public/home/2022122/xugang/project/tair10/bismark -1 $path/$name1 -2 $path/$name2
+bismark --parallel ${thread} --temp_dir $log -o $output/a11-bismark/${name} /public/home/2022122/xugang/project/tair10/bismark -1 $path/$name1 -2 $path/$name2
 
-">a9.genecount.$counter.$name.sh
+">a11.bismark.$counter.$name.sh
 }
 
 bismarkf rawdata/modification mod.A-1_1.fq.gz mod.A-1_2.fq.gz mod.A-1 
@@ -965,6 +965,8 @@ bismarkf rawdata/modification mod.OE-3_1.fq.gz mod.OE-3_2.fq.gz mod.OE-3
 bismarkf rawdata/modification mod.WT-1_1.fq.gz mod.WT-1_2.fq.gz mod.WT-1
 bismarkf rawdata/modification mod.WT-2_1.fq.gz mod.WT-2_2.fq.gz mod.WT-2
 bismarkf rawdata/modification mod.WT-3_1.fq.gz mod.WT-3_2.fq.gz mod.WT-3
+
+
 ```
 
 
