@@ -10,8 +10,8 @@
 ### Hi-C seq
 * [Hi-C seq information](hic.md)
 * [Hi-C process](#hi-c-library-preparation-sequencing-and-analysis)
-### Bisulfite-seq analysis
-* [Bisulfite-seq analysis](#Bisulfite-seq-analysis)
+### Bisulfite-seq
+* [Bisulfite-seq analysis](#bisulfite-seq-analysis)
 
 
 ## Sample information 
@@ -633,25 +633,6 @@ cd -
 }
 mergegf
 ```
-## Bisulfite-seq analysis
-
-* 1. Downloaded sequencing reads were processed using TrimGalore (v.0.4.1) (https://github.com/FelixKrueger/TrimGalore) with default parameters. 
-* 2. Reads were mapped to TAIR10 using Bismark (v.0.22.2), and methylation was called using MethylDackel (v.0.5.2) (https://github.com/dpryan79/MethylDackel), selecting --CHG and --CHH options. 
-* 3. CG methylation data were used in PCA.
-
-```sh
-# install reads processed.
-conda install trim-galore
-
-# install Bismark.
-wget https://github.com/FelixKrueger/Bismark/archive/refs/tags/v0.24.2.tar.gz
-
-# install MethylDackel.
-wget https://github.com/dpryan79/MethylDackel/archive/refs/tags/0.6.1.tar.gz
-
-
-
-```
 
 ## Hi-C library preparation, sequencing and analysis
 * Sequencing reads were mapped to the TAIR10 reference genome using the HiC-Pro (v.2.11.1) pipeline90. 
@@ -901,7 +882,28 @@ rm -rf /public/home/2022122/xugang/project/yaoruifeng/output/a10.hicseq/Hi-C
 hicf
 
 ```
-   MY_INSTALL_PATH/bin/HiC-Pro -i FULL_PATH_TO_DATA_FOLDER -o FULL_PATH_TO_OUTPUTS -c MY_LOCAL_CONFIG_FILE -p
+
+## Bisulfite-seq analysis
+
+* 1. Downloaded sequencing reads were processed using TrimGalore (v.0.4.1) (https://github.com/FelixKrueger/TrimGalore) with default parameters. 
+* 2. Reads were mapped to TAIR10 using Bismark (v.0.22.2), and methylation was called using MethylDackel (v.0.5.2) (https://github.com/dpryan79/MethylDackel), selecting --CHG and --CHH options. 
+* 3. CG methylation data were used in PCA.
+
+```sh
+# install reads processed.
+conda install trim-galore
+
+# install Bismark.
+wget https://github.com/FelixKrueger/Bismark/archive/refs/tags/v0.24.2.tar.gz
+
+# install MethylDackel.
+wget https://github.com/dpryan79/MethylDackel/archive/refs/tags/0.6.1.tar.gz
+
+
+
+```
+
+
 
 
 
