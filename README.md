@@ -1045,8 +1045,124 @@ fanc hic -f -b 10000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_examp
 fanc hic -f -b 5000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_5kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_5kb.hic
 
 ```
+
+```sh
+#run test
+# Map reads in a FASTQ file to a reference genome
+fanc map -m 25 -s 3 -t 4 --no-iterative --restriction-enzyme HindIII SRR4271982_chr18_19_1.fastq.gzip hg19_chr18_19/hg19_chr18_19 output2/sam/SRR4271982_chr18_19_1.bam
+fanc map -m 25 -s 3 -t 4 --no-iterative --restriction-enzyme HindIII SRR4271982_chr18_19_2.fastq.gzip hg19_chr18_19/hg19_chr18_19 output2/sam/SRR4271982_chr18_19_2.bam
+#Convenience function to sort a SAM file by name
+fanc sort_sam -t 4 --no-sambamba output2/sam/SRR4271982_chr18_19_1.bam
+fanc sort_sam -t 4 --no-sambamba output2/sam/SRR4271982_chr18_19_2.bam
+#Process and filter read pairs
+fanc pairs -f -g hg19_chr18_19.fa -t 4 -us -r HindIII -q 30.0 -S output2/sam/SRR4271982_chr18_19_1.bam output2/sam/SRR4271982_chr18_19_2.bam output2/pairs/fanc_example.pairs
+fanc pairs -d 10000 -l -p 2 --statistics-plot output2/plots/stats/fanc_example.pairs.stats.pdf output2/pairs/fanc_example.pairs
+fanc pairs --ligation-error-plot output2/plots/stats/fanc_example.pairs.ligation_error.pdf output2/pairs/fanc_example.pairs
+fanc pairs --re-dist-plot output2/plots/stats/fanc_example.pairs.re_dist.pdf output2/pairs/fanc_example.pairs
+#Process, filter, and correct Hic files
+fanc hic -f output2/pairs/fanc_example.pairs output2/hic/fanc_example.hic
+fanc hic -f -b 5000000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_5mb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_5mb.hic
+fanc hic -f -b 2000000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_2mb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_2mb.hic
+fanc hic -f -b 1000000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_1mb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_1mb.hic
+fanc hic -f -b 500000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_500kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_500kb.hic
+fanc hic -f -b 250000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_250kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_250kb.hic
+fanc hic -f -b 100000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_100kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_100kb.hic
+fanc hic -f -b 50000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_50kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_50kb.hic
+fanc hic -f -b 25000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_25kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_25kb.hic
+fanc hic -f -b 10000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_10kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_10kb.hic
+fanc hic -f -b 5000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_5kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_5kb.hic
+```
+
+
 #### FANC help.
- fanc map
+fanc auto
+```sh
+# fanc auto -h
+2023-12-13 11:12:46,677 INFO FAN-C version: 0.9.27
+usage: fanc auto [-h] [-g GENOME] [-r RESTRICTION_ENZYME] [-i GENOME_INDEX] [-n BASENAME] [-s STEP_SIZE] [-b BIN_SIZES [BIN_SIZES ...]] [-t THREADS]
+                 [--max-restriction-site-distance MAX_RESTRICTION_SITE_DISTANCE] [--fanc-parallel] [--split-fastq] [--memory-map] [--ice] [--norm-method NORM_METHOD] [-q QUALITY_CUTOFF]
+                 [--iterative-quality-cutoff ITERATIVE_QUALITY_CUTOFF] [--le-inward-cutoff INWARD_CUTOFF] [--le-outward-cutoff OUTWARD_CUTOFF] [--auto-le-cutoff] [-tmp] [--iterative] [--no-sam-sort]
+                 [--restore-coverage] [--split-ligation-junction] [--no-filter-pairs] [--no-hic] [--run-with RUN_WITH] [--job-prefix JOB_PREFIX] [--grid-startup-commands GRID_STARTUP_COMMANDS]
+                 [--grid-cleanup-commands GRID_CLEANUP_COMMANDS] [-f] [--no-sambamba USE_SAMBAMBA]
+                 input [input ...] output_folder
+
+Automatically process an entire Hi-C data set.
+
+positional arguments:
+  input                 Input files. fanc will try to guess the file type by its extension.
+  output_folder         Output folder. All output files and folders will be generated under this directory.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -g GENOME, --genome GENOME
+                        Genome for the Hi-C object.Path to region-based file (BED, GFF, ...) containing the non-overlapping regions to be used for Hi-C object construction. Typically restriction-enzyme
+                        fragments. Alternatively: Path to genome file (FASTA, folder with FASTA, hdf5 file), which will be used in conjunction with the type of restriction enzyme (-r) to calculate fragments
+                        directly.
+  -r RESTRICTION_ENZYME, --restriction-enzyme RESTRICTION_ENZYME
+                        Restriction enzyme name. Used for in silico digestion of genomic sequences and splitting of reads at Hi-C ligation junctions. (e.g. HindIII, case-sensitive). Separate multiple enzymes
+                        with ','. Restriction names can be any supported by Biopython, which obtains data from REBASE (http://rebase.neb.com/rebase/rebase.html).
+  -i GENOME_INDEX, --genome-index GENOME_INDEX
+                        Bowtie 2 or BWA genome index. Only required when passing FASTQ files as input.
+  -n BASENAME, --basename BASENAME
+                        Basename for output files. If not provided, will be guessed based on input file names.
+  -s STEP_SIZE, --step-size STEP_SIZE
+                        Step size for iterative mapping. Default: 3
+  -b BIN_SIZES [BIN_SIZES ...], --bin-sizes BIN_SIZES [BIN_SIZES ...]
+                        Bin sizes for Hi-C matrix generation. Default: 5mb, 2mb, 1mb, 500kb, 250kb, 100kb, 50kb, 25kb, 10kb, 5kb.
+  -t THREADS, --threads THREADS
+                        Maximum number of threads. The number provided here will not be exceeded by analysis steps running alone or in parallel. Default: 1
+  --max-restriction-site-distance MAX_RESTRICTION_SITE_DISTANCE
+                        Insert / ligation fragment sizes are inferred from the sum of distances of both reads to the nearest restriction sites. Fragment larger than this value are filtered from the Pairs
+                        object. The default value of 10000 only removes extremely large fragments, and is thus considered conservative.Default: 10000
+  --fanc-parallel       Use FAN-C parallelisation, which launches multiple mapper jobs. This may be faster in some cases than relying on the internal parallelisation of the mapper, but has potentially high
+                        disk I/O and memory usage.
+  --split-fastq         Split fastq files into chunks of 10M reads. Reads will be merged again on the SAM level. Splitting and merging bypasses the -tmp flag. This option reduces disk usage in tmp, in case
+                        the system has a small tmp partition.
+  --memory-map          Map Bowtie2 index to memory. Recommended if running on medium-memory systems and using many parallel threads).
+  --ice                 DEPRECATED. Correct Hi-C matrices using ICE instead of Knight-Ruiz matrix balancing. Slower, but much more memory-friendly.
+  --norm-method NORM_METHOD
+                        Normalisation method. Options are: KR (default) = Knight-Ruiz matrix balancing (Fast, accurate, but memory-intensive); ICE = ICE matrix balancing (more CPU-intensive, but also more
+                        memory-efficient); VC = vanilla coverage (a single round of ICE balancing); VC-SQRT = vanilla coverage square root (reduces overcorrection compared to VC)
+  -q QUALITY_CUTOFF, --quality-cutoff QUALITY_CUTOFF
+                        Cutoff for the minimum mapping quality of a read. For numbers larger than 1, will filter on MAPQ. If a number between 0 and 1 is provided, will filter on the AS tag instead of mapping
+                        quality (only BWA). The quality cutoff is then interpreted as the fraction of bases that have to be matched for any given read. Only applies to SAM/BAM input!. Default is not to
+                        filter on mapping quality.
+  --iterative-quality-cutoff ITERATIVE_QUALITY_CUTOFF
+                        MAPQ cutoff for mapped reads. Only applies when iterative mapping is enabled: if a mapped read has MAPQ below this cutoff,it will be sent to another iteration in an attempt to find a
+                        higher quality alignment. Default is 3 for BWA and 30 for Bowtie2.
+  --le-inward-cutoff INWARD_CUTOFF
+                        Ligation error inward cutoff. Default: no ligation error filtering.
+  --le-outward-cutoff OUTWARD_CUTOFF
+                        Ligation error outward cutoff. Default: no ligation error filtering.
+  --auto-le-cutoff      Automatically determine ligation error cutoffs. Use with caution, this setting has a tendency to choose large cutoffs, removing many pairs close to the diagonal.
+  -tmp, --work-in-tmp   Work in temporary directory. Copies input files and generates output files in a temporary directory. Files will be moved to their intended destination once an analysis step finishes.
+                        Reduces network I/O if using remote file systems.
+  --iterative           Map reads iteratively. Can improve mappability, especially with low-quality reads. Reads are initially trimmed to 25bp and mapped to the reference genome. If no unique mapping
+                        location is found, the read is extended by 3bp and the process is repeated until the full length of the read is reached or a unique mapping location is found.
+  --no-sam-sort         Do not sort SAM/BAM files. Sorted files are required for the pair generating step. Only omit this if you are supplying presorted (by read name) SAM/BAM files.
+  --restore-coverage    Restore coverage to the original total number of reads. Otherwise matrix entries will be contact probabilities. Only available for KR matrix balancing.
+  --split-ligation-junction
+                        Split reads at predicted ligation junction before mapping. Requires the -r argument.
+  --no-filter-pairs     Do not filter read pairs. By default, the following filters are applied: self-ligations, PCR duplicates,restriction distance (>10kb)
+  --no-hic              Do not process pairs into Hi-C maps (stop after read pairing step).
+  --run-with RUN_WITH   Choose how to run the commands in fanc auto. Options: 'parallel' (default): Run fanc commands on local machine, use multiprocessing parallelisation. 'sge': Submit fanc commands to a
+                        Sun/Oracle Grid Engine cluster. 'slurm': Submit fanc commands to a Slurm cluster. 'test': Do not run fanc commands but print all commands and their dependencies to stdout for review.
+  --job-prefix JOB_PREFIX
+                        Job Prefix for SGE and Slurm. Works with '--run-with sge' and --run-with slurm. Default: 'fanc_<6 random letters>_'
+  --grid-startup-commands GRID_STARTUP_COMMANDS
+                        Path to a file with BASH commands that are executed before every FAN-C command that is run on a grid engine / cluster. This could, for example, include environment-specific settings,
+                        such as activation of a Python virtualenv.
+  --grid-cleanup-commands GRID_CLEANUP_COMMANDS
+                        Path to a file with BASH commands that are executed after every FAN-C command that is run on a grid engine / cluster. Use this to clean the file system or environment set up with
+                        --grid-startup-commands.
+  -f, --force-overwrite
+                        Force overwriting of existing files. Otherwise you will be prompted before files are overwritten.
+  --no-sambamba USE_SAMBAMBA
+                        Do not use sambamba for sorting SAM file, even when it is available. Use pysam instead.
+(FAN-C) [2022122@admin1 fanc_examples]$
+```
+
+fanc map
 ```sh
 # fanc map
 usage: fanc map [-h] [-m MIN_SIZE] [-s STEP_SIZE] [--trim-front] [-t THREADS] [-q QUALITY] [-r RESTRICTION_ENZYME] [-k MAX_ALIGNMENTS] [-a] [-b BATCH_SIZE] [--fanc-parallel] [--split-fastq] [--memory-map]
