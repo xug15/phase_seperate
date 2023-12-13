@@ -1047,30 +1047,38 @@ fanc hic -f -b 5000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_exampl
 ```
 
 ```sh
+#!/bin/bash
+#SBATCH -o /public/home/2022122/xugang/app/fanc_examples/log/log.%j.out
+#SBATCH -e /public/home/2022122/xugang/app/fanc_examples/log/log.%j.error
+#SBATCH --partition=Cnode2
+#SBATCH -J 5fanc
+#SBATCH -N 1
+#SBATCH -n 50
+source /public/home/2022122/xugang/bashrc
 #run test
 # Map reads in a FASTQ file to a reference genome
-fanc map -m 25 -s 3 -t 4 --no-iterative --restriction-enzyme HindIII SRR4271982_chr18_19_1.fastq.gzip hg19_chr18_19/hg19_chr18_19 output2/sam/SRR4271982_chr18_19_1.bam
-fanc map -m 25 -s 3 -t 4 --no-iterative --restriction-enzyme HindIII SRR4271982_chr18_19_2.fastq.gzip hg19_chr18_19/hg19_chr18_19 output2/sam/SRR4271982_chr18_19_2.bam
+conda run -n FAN-C fanc map -m 25 -s 3 -t 4 --no-iterative --restriction-enzyme HindIII SRR4271982_chr18_19_1.fastq.gzip hg19_chr18_19/hg19_chr18_19 output2/sam/SRR4271982_chr18_19_1.bam
+conda run -n FAN-C fanc map -m 25 -s 3 -t 4 --no-iterative --restriction-enzyme HindIII SRR4271982_chr18_19_2.fastq.gzip hg19_chr18_19/hg19_chr18_19 output2/sam/SRR4271982_chr18_19_2.bam
 #Convenience function to sort a SAM file by name
-fanc sort_sam -t 4 --no-sambamba output2/sam/SRR4271982_chr18_19_1.bam
-fanc sort_sam -t 4 --no-sambamba output2/sam/SRR4271982_chr18_19_2.bam
+conda run -n FAN-C fanc sort_sam -t 4 --no-sambamba output2/sam/SRR4271982_chr18_19_1.bam
+conda run -n FAN-C fanc sort_sam -t 4 --no-sambamba output2/sam/SRR4271982_chr18_19_2.bam
 #Process and filter read pairs
-fanc pairs -f -g hg19_chr18_19.fa -t 4 -us -r HindIII -q 30.0 -S output2/sam/SRR4271982_chr18_19_1.bam output2/sam/SRR4271982_chr18_19_2.bam output2/pairs/fanc_example.pairs
-fanc pairs -d 10000 -l -p 2 --statistics-plot output2/plots/stats/fanc_example.pairs.stats.pdf output2/pairs/fanc_example.pairs
-fanc pairs --ligation-error-plot output2/plots/stats/fanc_example.pairs.ligation_error.pdf output2/pairs/fanc_example.pairs
-fanc pairs --re-dist-plot output2/plots/stats/fanc_example.pairs.re_dist.pdf output2/pairs/fanc_example.pairs
+conda run -n FAN-C fanc pairs -f -g hg19_chr18_19.fa -t 4 -us -r HindIII -q 30.0 -S output2/sam/SRR4271982_chr18_19_1.bam output2/sam/SRR4271982_chr18_19_2.bam output2/pairs/fanc_example.pairs
+conda run -n FAN-C fanc pairs -d 10000 -l -p 2 --statistics-plot output2/plots/stats/fanc_example.pairs.stats.pdf output2/pairs/fanc_example.pairs
+conda run -n FAN-C fanc pairs --ligation-error-plot output2/plots/stats/fanc_example.pairs.ligation_error.pdf output2/pairs/fanc_example.pairs
+conda run -n FAN-C fanc pairs --re-dist-plot output2/plots/stats/fanc_example.pairs.re_dist.pdf output2/pairs/fanc_example.pairs
 #Process, filter, and correct Hic files
-fanc hic -f output2/pairs/fanc_example.pairs output2/hic/fanc_example.hic
-fanc hic -f -b 5000000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_5mb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_5mb.hic
-fanc hic -f -b 2000000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_2mb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_2mb.hic
-fanc hic -f -b 1000000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_1mb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_1mb.hic
-fanc hic -f -b 500000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_500kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_500kb.hic
-fanc hic -f -b 250000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_250kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_250kb.hic
-fanc hic -f -b 100000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_100kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_100kb.hic
-fanc hic -f -b 50000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_50kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_50kb.hic
-fanc hic -f -b 25000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_25kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_25kb.hic
-fanc hic -f -b 10000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_10kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_10kb.hic
-fanc hic -f -b 5000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_5kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_5kb.hic
+conda run -n FAN-C fanc hic -f output2/pairs/fanc_example.pairs output2/hic/fanc_example.hic
+conda run -n FAN-C fanc hic -f -b 5000000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_5mb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_5mb.hic
+conda run -n FAN-C fanc hic -f -b 2000000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_2mb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_2mb.hic
+conda run -n FAN-C fanc hic -f -b 1000000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_1mb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_1mb.hic
+conda run -n FAN-C fanc hic -f -b 500000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_500kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_500kb.hic
+conda run -n FAN-C fanc hic -f -b 250000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_250kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_250kb.hic
+conda run -n FAN-C fanc hic -f -b 100000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_100kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_100kb.hic
+conda run -n FAN-C fanc hic -f -b 50000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_50kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_50kb.hic
+conda run -n FAN-C fanc hic -f -b 25000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_25kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_25kb.hic
+conda run -n FAN-C fanc hic -f -b 10000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_10kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_10kb.hic
+conda run -n FAN-C fanc hic -f -b 5000 -r 0.1 -t 4 --statistics-plot output2/plots/stats/fanc_example_5kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_5kb.hic
 ```
 
 
