@@ -1046,6 +1046,7 @@ fanc hic -f -b 5000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_exampl
 
 ```
 #### FANC help.
+ fanc map
 ```sh
 # fanc map
 usage: fanc map [-h] [-m MIN_SIZE] [-s STEP_SIZE] [--trim-front] [-t THREADS] [-q QUALITY] [-r RESTRICTION_ENZYME] [-k MAX_ALIGNMENTS] [-a] [-b BATCH_SIZE] [--fanc-parallel] [--split-fastq] [--memory-map]
@@ -1088,8 +1089,10 @@ optional arguments:
   --mapper-type MAPPER_TYPE
                         Manually set mapper type. Currently supported: bowtie2, bwa, and bwa-mem2. Not that this is generally auto-detected from the index path.
   -tmp, --work-in-tmp   Copy original file to temporary directory.Reduces network I/O.
-
+```
 fanc sort_sam
+```sh
+#fanc sort_sam
 usage: fanc sort_sam [-h] [-t THREADS] [-S] [-tmp] sam [output]
 
 Convenience function to sort a SAM file by name. Exactly the same as 'samtools sort -n', but potentiallyfaster if sambamba is available.
@@ -1104,7 +1107,9 @@ optional arguments:
                         Number of sorting threads (only when sambamba is available). Default: 1
   -S, --no-sambamba     Do not use sambamba, even when it is available. Use pysam instead.
   -tmp, --work-in-tmp   Work in temporary directory
-
+```
+fanc pairs
+```sh
 # fanc pairs
 usage: fanc pairs [-h] [-g GENOME] [-r RESTRICTION_ENZYME] [-m] [-u] [-us] [-q QUALITY] [-c CONTAMINANT] [-i INWARD] [-o OUTWARD] [--filter-ligation-auto] [-d REDIST] [-l] [-p DUP_THRESH] [-s STATS]
                   [--reset-filters] [--statistics-plot STATS_PLOT] [--re-dist-plot RE_DIST_PLOT] [--ligation-error-plot LIGATION_ERROR_PLOT] [-t THREADS] [-b BATCH_SIZE] [-S] [-f] [--bwa] [-tmp]
@@ -1174,7 +1179,9 @@ optional arguments:
   --bwa                 Use filters appropriate for BWA and not Bowtie2. This will typically be identified automatically from the SAM/BAM header. Set this flag if you are having problems during filtering
                         (typically 0 reads pass the filtering threshold).
   -tmp, --work-in-tmp   Work in temporary directory
-
+```
+fanc hic
+```sh
 # fanc hic
 usage: fanc hic [-h] [-b BIN_SIZE] [-l FILTER_LOW_COVERAGE] [-r FILTER_LOW_COVERAGE_RELATIVE] [-a] [-d FILTER_DIAGONAL] [--marginals-plot MARGINALS_PLOT] [--reset-filters] [--downsample DOWNSAMPLE]
                 [--subset SUBSET] [-i] [-k] [-n] [-m NORM_METHOD] [-w] [-c] [--only-inter] [-s STATS] [--statistics-plot STATS_PLOT] [--chromosomes CHROMOSOMES [CHROMOSOMES ...]] [-f] [-t THREADS]
