@@ -1043,6 +1043,13 @@ fanc hic -f -b 50000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_examp
 fanc hic -f -b 25000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_25kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_25kb.hic
 fanc hic -f -b 10000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_10kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_10kb.hic
 fanc hic -f -b 5000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_5kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_5kb.hic
+#
+fanc expected -p output/expected/fanc_example_100kb_expected.png  -c chr19  output/hic/binned/fanc_example_100kb.hic  output/expected/fanc_example_100kb_expected.txt
+#fanc expected -l "HindIII 100k" "HindIII 5M" "MboI 100k" "MboI 1M" "MboI 50k"  -c chr19 -p architecture/expected/expected_multi.png  architecture/other-hic/lowc_hindiii_100k_1mb.hic  architecture/other-hic/lowc_hindiii_5M_1mb.hic architecture/other-hic/lowc_mboi_100k_1mb.hic  architecture/other-hic/lowc_mboi_1M_1mb.hic  architecture/other-hic/lowc_mboi_50k_1mb.hic architecture/expected/expected_multi.txt
+fancplot -o output/expected/fanc_example_100kb_chr18_oe.png  chr18:1-78mb -p triangular -e output/hic/binned/fanc_example_100kb.hic  -vmin -2 -vmax 2
+
+
+
 
 ```
 
@@ -1113,6 +1120,60 @@ conda run -n FAN-C fanc hic -f -b 10000 -r 0.1 -t 50 --statistics-plot output2/p
 
 echo "conda run -n FAN-C fanc hic -f -b 5000 -r 0.1 -t 50 --statistics-plot output2/plots/stats/fanc_example_5kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_5kb.hic"
 conda run -n FAN-C fanc hic -f -b 5000 -r 0.1 -t 50 --statistics-plot output2/plots/stats/fanc_example_5kb.stats.pdf -n --norm-method kr output2/hic/fanc_example.hic output2/hic/binned/fanc_example_5kb.hic
+
+```
+### Run the steps with FAN-C
+```sh
+fancf(){
+log=$output/a11.fanc/log
+[[ -d $log ]] || mkdir -p $log
+[[ -d $output/a11.fanc/bam ]] || mkdir -p $output/a11.fanc/bam
+[[ -d $output/a11.fanc/pairs ]] ||  mkdir -p $output/a11.fanc/pairs
+[[ -d $output/a11.fanc/plots/stats/ ]] || mkdir -p $output/a11.fanc/plots/stats/
+[[ -d $output/a11.fanc/hic ]] || mkdir -p $output/a11.fanc/hic
+[[ -d $output/a11.fanc/hic/binned ]] || mkdir -p $output/a11.fanc/hic/binned
+
+#remove background file
+((counter++))
+name=$1
+name1=$2
+name2=$3
+
+
+echo "#!/bin/bash
+#SBATCH -o $log/${name1}.%j.out
+#SBATCH -e $log/${name1}.%j.error
+#SBATCH --partition=${node}
+#SBATCH -J 5${1}
+#SBATCH -N 1
+#SBATCH -n ${thread}
+source /public/home/2022122/xugang/bashrc
+
+cp ${output}/a10.hicseq/Hi-C/bowtie_results/bwt2/${name}/${name1} $output/a11.fanc/bam/${name}.R1.bam
+cp ${output}/a10.hicseq/Hi-C/bowtie_results/bwt2/${name}/${name2} $output/a11.fanc/bam/${name}.R2.bam
+#Convenience function to sort a SAM file by name
+#sort
+conda run -n FAN-C fanc sort_sam -t ${thread} --no-sambamba $output/a11.fanc/bam/${name}.R1.bam $output/a11.fanc/bam/${name}.sort.R1.bam
+conda run -n FAN-C fanc sort_sam -t ${thread} --no-sambamba $output/a11.fanc/bam/${name}.R2.bam $output/a11.fanc/bam/${name}.sort.R2.bam
+#pairs
+conda run -n FAN-C fanc pairs -f -g /public/home/2022122/xugang/project/tair10/tair10.fa  -t ${thread} -us -r HindIII,MboI -q 30.0 -S $output/a11.fanc/bam/${name}.sort.R1.bam $output/a11.fanc/bam/${name}.sort.R2.bam $output/a11.fanc/pairs/${name}.pairs
+#hic
+conda run -n FAN-C fanc hic -f $output/a11.fanc/pairs/${name}.pairs $output/a11.fanc/hic/${name}.hic
+conda run -n FAN-C fanc hic -f -b 100000 -r 0.1 -t ${thread} --statistics-plot $output/a11.fanc/plots/stats/${name}_100kb.stats.pdf -n --norm-method kr $output/a11.fanc/hic/${name}.hic $output/a11.fanc/hic/binned/fa${name}_100kb.hic
+#plot
+conda run -n FAN-C fanc pairs -d 10000 -l -p 2 --statistics-plot $output/a11.fanc/plots/stats/${name}.pairs.stats.pdf $output/a11.fanc/pairs/${name}.pairs
+
+conda run -n FAN-C fanc pairs --ligation-error-plot $output/a11.fanc/plots/stats/${name}.pairs.ligation_error.pdf $output/a11.fanc/pairs/${name}.pairs
+
+conda run -n FAN-C fanc pairs --re-dist-plot $output/a11.fanc/plots/stats/${name}.pairs.re_dist.pdf $output/a11.fanc/pairs/${name}.pairs
+
+
+">a11.fanc.$counter.$name1.sh
+}
+fancf mut hic_mut_R1_tair10.bowtie2.bwt2merged.bam hic_mut_R2_tair10.bowtie2.bwt2merged.bam
+fancf oe  hic_oe_R1_tair10.bowtie2.bwt2merged.bam  hic_oe_R2_tair10.bowtie2.bwt2merged.bam
+fancf wt  hic_wt_R1_tair10.bowtie2.bwt2merged.bam  hic_wt_R2_tair10.bowtie2.bwt2merged.bam
+
 
 ```
 
@@ -1398,6 +1459,56 @@ optional arguments:
                         version or to convert Cooler or Juicer files to FAN-C format.
   -tmp, --work-in-tmp   Work in temporary directory
 
+```
+fancplot  
+```sh
+fancplot -h
+usage: fancplot [<fancplot global parameters>] <region> [<region> ...]
+            --plot <plot type> [<plot parameters>] <plot data file(s)> [...]
+
+            Run fancplot --plot <plot type> -h for help on a specific subplot.
+
+Plot types:
+
+-- Matrix --
+triangular    Triangular Hi-C plot
+square        Square Hi-C plot
+split         Matrix vs matrix plot
+mirror        "Mirrored" matrix comparison plot
+
+-- Region --
+scores        Region scores plot with parameter dependency
+line          Line plot
+bar           Bar plot for region scores
+layer         Layered feature plot
+gene          Gene plot
+
+fancplot plotting tool for fanc
+
+positional arguments:
+  regions               List of region selectors (<chr>:<start>-<end>) or files with region information (BED, GTF, ...).
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o OUTPUT, --output OUTPUT
+                        Suppresses interactive plotting window and redirects plot to file. Specify path to file when plotting a single region, and path to a folder for plotting multiple regions.
+  -s SCRIPT, --script SCRIPT
+                        Use a script file to define plot.
+  -p PLOT, --plot PLOT  New plot, type will be chosen automatically by file type, unless "-t" is provided.
+  -n NAME, --name NAME  Plot name to be used as prefix when plotting multiple regions. Is ignored for single region and interactive plot.
+  --width WIDTH         Width of the figure in inches. Default: 4
+  -w WINDOW_SIZE, --window-size WINDOW_SIZE
+                        Plotting region size in base pairs. If provided, the actual size of the given region is ignored and instead a region <chromosome>:<region center - window size/2> - <region center +
+                        window size/2> will be plotted.
+  --invert-x            Invert x-axis for this plot
+  --tick-locations TICK_LOCATIONS [TICK_LOCATIONS ...]
+                        Manually define the locations of the tick labels on the genome axis.
+  --verbose, -v         Set verbosity level: Can be chained like "-vvv" to increase verbosity. Default is to show errors, warnings, and info messages (same as "-vv"). "-v" shows only errors and warnings,
+                        "-vvv" shows errors, warnings, info, and debug messages.
+  --silent              Do not print log messages to command line.
+  -V, --version         Print version information
+  --pdf-text-as-font    When saving a plot to PDF, save text as a font instead of a path. This will increase the file size, sometimes by a lot, but it makes the text in plots editable in vector graphics
+                        programs such as Inkscape or Illustrator.
 ```
 
 ```sh
