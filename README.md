@@ -883,6 +883,118 @@ hicf
 
 ```
 
+###  FAN-C (v.0.9.8).
+visit https://support.hdfgroup.org/ftp/HDF5/current/src/   
+download hdf5-1.10.5.tar.gz
+```sh
+# make a new directory
+mkdir hdf5-build
+cd hdf5-build
+# replace xx with current version number
+wget https://support.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.xx.tar.gz
+# unpack
+tar xzf hdf5-1.8.xx.tar.gz
+cd hdf5-1.8.xx/
+# use --prefix to set the folder in which HDF5 should be installed
+# alternatively, you can omit --prefix=... here and run
+# sudo make install to install globally (requires admin rights)
+./configure --prefix=/public/home/2022122/xugang/app/hdf5-1.8.21
+make
+make install
+export HDF5_DIR=/public/home/2022122/xugang/app/hdf5-1.8.21
+```
+
+### FAN-C  
+We strongly recommend installing FAN-C in a fresh virtual environment to prevent dependency issues. You can do this with tools like pyenv or manually using venv, for example:  
+```sh
+rm -rf /public/home/2022122/xugang/app/fanc
+mkdir /public/home/2022122/xugang/app/fanc
+# create local virtual environment in current folder
+/public/home/2022122/miniconda3/bin/python -m venv /public/home/2022122/xugang/app/fanc
+# activate virtual environment
+source /public/home/2022122/xugang/app/fanc/bin/activate
+#The simplest way to install FAN-C is via pip:
+
+#rm .venv/share/python-wheels/pep517-0.7.0-py2.py3-none-any.whl
+pip install -U setuptools
+pip install fanc
+#and that should be all you need! If you are not the owner of the Python installation, try:
+deactivate
+pip install --user fanc
+```
+
+```sh
+#下载
+#1.1 创建新环境
+conda create -n FAN-C python=3.8 -y
+conda activate FAN-C
+#1.2 pip 下载
+pip install fanc
+#note，如果出现报错可以尝试以下办法
+pip uninstall fanc
+pip uninstall pysam
+pip install Cython
+pip install pysam
+pip install fanc
+# 2.测试
+# 2.1 下载测试数据
+wget -O examples.zip "https://keeper.mpdl.mpg.de/d/147906745b634c779ed3/files/?p=/examples.zip&dl=1"
+unzip examples.zip
+cd examples
+#2.2 测试软件
+fanc auto SRR4271982_chr18_19_1.fastq.gzip SRR4271982_chr18_19_2.fastq.gzip output/ \
+          -g hg19_chr18_19.fa -i hg19_chr18_19/hg19_chr18_19 -n fanc_example -t 4 -r HindIII \
+          --split-ligation-junction -q 30 --run-with test
+
+2023-12-12 14:51:25,903 INFO FAN-C version: 0.9.27
+2023-12-12 14:51:25,994 INFO Output folder: output/
+2023-12-12 14:51:25,994 INFO Input files: SRR4271982_chr18_19_1.fastq.gzip, SRR4271982_chr18_19_2.fastq.gzip
+2023-12-12 14:51:25,994 INFO Input file types: fastq, fastq
+2023-12-12 14:51:25,994 INFO Final basename: fanc_example (you can change this with the -n option!)
+0 (threads: 4, depends on: ): fanc map -m 25 -s 3 -t 4 --no-iterative --restriction-enzyme HindIII SRR4271982_chr18_19_1.fastq.gzip hg19_chr18_19/hg19_chr18_19 output/sam/SRR4271982_chr18_19_1.bam
+1 (threads: 4, depends on: ): fanc map -m 25 -s 3 -t 4 --no-iterative --restriction-enzyme HindIII SRR4271982_chr18_19_2.fastq.gzip hg19_chr18_19/hg19_chr18_19 output/sam/SRR4271982_chr18_19_2.bam
+2 (threads: 1, depends on: 0, 1): fanc sort_sam -t 4 --no-sambamba output/sam/SRR4271982_chr18_19_1.bam
+3 (threads: 1, depends on: 0, 1): fanc sort_sam -t 4 --no-sambamba output/sam/SRR4271982_chr18_19_2.bam
+4 (threads: 4, depends on: 2, 3): fanc pairs -f -g hg19_chr18_19.fa -t 4 -us -r HindIII -q 30.0 -S output/sam/SRR4271982_chr18_19_1.bam output/sam/SRR4271982_chr18_19_2.bam output/pairs/fanc_example.pairs
+5 (threads: 1, depends on: 4): fanc pairs -d 10000 -l -p 2 --statistics-plot output/plots/stats/fanc_example.pairs.stats.pdf output/pairs/fanc_example.pairs
+6 (threads: 1, depends on: 5): fanc pairs --ligation-error-plot output/plots/stats/fanc_example.pairs.ligation_error.pdf output/pairs/fanc_example.pairs
+7 (threads: 1, depends on: 5): fanc pairs --re-dist-plot output/plots/stats/fanc_example.pairs.re_dist.pdf output/pairs/fanc_example.pairs
+8 (threads: 1, depends on: 5): fanc hic -f output/pairs/fanc_example.pairs output/hic/fanc_example.hic
+9 (threads: 4, depends on: 8): fanc hic -f -b 5000000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_5mb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_5mb.hic
+10 (threads: 4, depends on: 8): fanc hic -f -b 2000000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_2mb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_2mb.hic
+11 (threads: 4, depends on: 8): fanc hic -f -b 1000000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_1mb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_1mb.hic
+12 (threads: 4, depends on: 8): fanc hic -f -b 500000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_500kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_500kb.hic
+13 (threads: 4, depends on: 8): fanc hic -f -b 250000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_250kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_250kb.hic
+14 (threads: 4, depends on: 8): fanc hic -f -b 100000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_100kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_100kb.hic
+15 (threads: 4, depends on: 8): fanc hic -f -b 50000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_50kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_50kb.hic
+16 (threads: 4, depends on: 8): fanc hic -f -b 25000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_25kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_25kb.hic
+17 (threads: 4, depends on: 8): fanc hic -f -b 10000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_10kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_10kb.hic
+18 (threads: 4, depends on: 8): fanc hic -f -b 5000 -r 0.1 -t 4 --statistics-plot output/plots/stats/fanc_example_5kb.stats.pdf -n --norm-method kr output/hic/fanc_example.hic output/hic/binned/fanc_example_5kb.hic
+
+
+```
+
+```sh
+wget https://github.com/vaquerizaslab/fanc/archive/refs/heads/main.zip
+
+unzip fanc-main.zip
+
+cd fanc-main
+
+pip install .
+
+```
+
+```sh
+The module ‘fanc auto’ was applied to generate 500, 100, 50, 10 and 1 kb contact matrices (hic files). 
+* The resultant hic files with 100-kb resolution were directed to the ‘fanc expected’ module to calculate the expected interaction probability against genomic distance for intrachromosomal interaction. 
+* For matrix and score comparisons, the default comparison method of fold-change was used with the ‘fanc compare’ command. 
+* The outputs (hic object) were transferred to text files by ‘fanc dump’ and were visualized as heatmaps in R using ggplot2. 
+
+```
+
+
+
 ## Bisulfite-seq analysis
 
 * 1. Downloaded sequencing reads were processed using TrimGalore (v.0.4.1) (https://github.com/FelixKrueger/TrimGalore) with default parameters. 
@@ -979,11 +1091,44 @@ wget https://github.com/dpryan79/MethylDackel/archive/refs/tags/0.6.1.tar.gz
 ```
 
 
+### Module
+Usage  
+To get a list of all currently loaded modules:
+```sh
 
 
+$ module list
+Currently Loaded Modulefiles:
+1) DEVELOP                3) intelmpi/2017.4
+2) intel/16.0             4) likwid/system-default
+detailing that from the category DEVELOP, the Intel Compiler ICC in version 16, the Intel implementation of MPI in Version 2017.4 and the system default version of Likwid are currently loaded and usable.
 
+Calling
 
+$ module avail
+lists all available (loadable) modules and module groups. With the information of these two commands, one can:
+```
+load a specific module
+unload a specific module
+```sh
 
+$ module load x
+
+$ module unload x
+```
+load a specific module  
+unload a specific module
+```sh
+
+$ module load x
+
+$ module unload x
+```
+swap a specific module for another one (especially useful to switch between different versions of the same program)
+```sh
+
+$ module switch x y
+```
 
 
 
