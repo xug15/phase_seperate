@@ -1459,7 +1459,7 @@ optional arguments:
 ```
 fancplot  
 ```sh
-fancplot -h
+#fancplot -h
 usage: fancplot [<fancplot global parameters>] <region> [<region> ...]
             --plot <plot type> [<plot parameters>] <plot data file(s)> [...]
 
@@ -1509,7 +1509,7 @@ optional arguments:
 ```
 fanc compare
 ```sh
-fanc compare -h
+#fanc compare -h
 2023-12-14 15:53:46,109 INFO FAN-C version: 0.9.27
 usage: fanc compare [-h] [-c COMPARISON] [-o OUTPUT_FORMAT] [-S] [-l] [--log-matrix] [-Z] [-I] [-e] [-u] [-tmp]
                     input input output
@@ -1539,6 +1539,34 @@ optional arguments:
   -tmp, --work-in-tmp   Work in temporary directory
 (FAN-C) [2022122@admin1 fanc_examples]$
 
+```
+fanc  dump -h
+```sh
+# fanc  dump -h
+2023-12-14 16:07:32,209 INFO FAN-C version: 0.9.27
+usage: fanc dump [-h] [-s SUBSET] [-S] [--only-intra] [-e] [-l] [-u] [-tmp] hic [matrix] [regions]
+
+Dump Hic file to txt file(s).
+
+positional arguments:
+  hic                   Hic file
+  matrix                Output file for matrix entries. If not provided, will write to stdout.
+  regions               Output file for Hic regions. If not provided, will write regions into matrix file.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s SUBSET, --subset SUBSET
+                        Only output this matrix subset. Format: <chr>[:<start>-<end>][--<chr>[:<start><end>]], e.g.:
+                        "chr1--chr1" to extract only the chromosome 1 submatrix; "chr2:3400000-4200000" to extract
+                        contacts of this region on chromosome 2 to all other regions in the genome;
+  -S, --no-sparse       Store full, square matrix instead of sparse format.
+  --only-intra          Only dump intra-chromosomal data. Dumps everything by default.
+  -e, --observed-expected
+                        O/E transform matrix values.
+  -l, --log2            Log2-transform matrix values. Useful for O/E matrices (-e option)
+  -u, --uncorrected     Output uncorrected (not normalised) matrix values).
+  -tmp, --work-in-tmp   Work in temporary directory
+(FAN-C) [2022122@admin1 fanc_examples]$
 ```
 
 ```sh
