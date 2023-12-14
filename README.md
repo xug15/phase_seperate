@@ -1048,9 +1048,6 @@ fanc expected -p output/expected/fanc_example_100kb_expected.png  -c chr19  outp
 #fanc expected -l "HindIII 100k" "HindIII 5M" "MboI 100k" "MboI 1M" "MboI 50k"  -c chr19 -p architecture/expected/expected_multi.png  architecture/other-hic/lowc_hindiii_100k_1mb.hic  architecture/other-hic/lowc_hindiii_5M_1mb.hic architecture/other-hic/lowc_mboi_100k_1mb.hic  architecture/other-hic/lowc_mboi_1M_1mb.hic  architecture/other-hic/lowc_mboi_50k_1mb.hic architecture/expected/expected_multi.txt
 fancplot -o output/expected/fanc_example_100kb_chr18_oe.png  chr18:1-78mb -p triangular -e output/hic/binned/fanc_example_100kb.hic  -vmin -2 -vmax 2
 
-
-
-
 ```
 
 ```sh
@@ -1509,6 +1506,39 @@ optional arguments:
   -V, --version         Print version information
   --pdf-text-as-font    When saving a plot to PDF, save text as a font instead of a path. This will increase the file size, sometimes by a lot, but it makes the text in plots editable in vector graphics
                         programs such as Inkscape or Illustrator.
+```
+fanc compare
+```sh
+fanc compare -h
+2023-12-14 15:53:46,109 INFO FAN-C version: 0.9.27
+usage: fanc compare [-h] [-c COMPARISON] [-o OUTPUT_FORMAT] [-S] [-l] [--log-matrix] [-Z] [-I] [-e] [-u] [-tmp]
+                    input input output
+
+Create pairwise comparisons of Hi-C comparison maps
+
+positional arguments:
+  input                 Input matrix (e.g. Hic) files.
+  output                Output ComparisonMatrix file.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c COMPARISON, --comparison COMPARISON
+                        Type of comparison. Default: fold-change, other options are: difference
+  -o OUTPUT_FORMAT, --output-format OUTPUT_FORMAT
+                        Output format for region-based comparisons. Only relevant when using BED, GFF, or another
+                        region-based format as input.
+  -S, --no-scale        Do not scale input matrices to the same number of valid pairs
+  -l, --log             Log2-convert comparison values (AFTER the comparison)
+  --log-matrix          Log2-convert matrices (BEFORE the comparison)
+  -Z, --ignore-zero     Do not consider pixels where one matrix entry is zero
+  -I, --ignore-infinite
+                        Do not consider pixels where the comparison yields "inf"
+  -e, --observed-expected
+                        O/E transform matrix values before comparison. Only has an effect on matrix comparisons.
+  -u, --uncorrected     Compare uncorrected matrices. Only has an effect on matrix comparisons.
+  -tmp, --work-in-tmp   Work in temporary directory
+(FAN-C) [2022122@admin1 fanc_examples]$
+
 ```
 
 ```sh
