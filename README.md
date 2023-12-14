@@ -1172,6 +1172,32 @@ fancf oe  hic_oe_R1_tair10.bowtie2.bwt2merged.bam  hic_oe_R2_tair10.bowtie2.bwt2
 fancf wt  hic_wt_R1_tair10.bowtie2.bwt2merged.bam  hic_wt_R2_tair10.bowtie2.bwt2merged.bam
 
 
+fancdumpf(){
+log=$output/a11.fanc/log
+#remove background file
+((counter++))
+name=$1
+name1=$2
+name2=$3
+[[ -d $output/a11.fanc/dump ]] || mkdir -p $output/a11.fanc/dump
+
+echo "#!/bin/bash
+#SBATCH -o $log/${name1}.%j.out
+#SBATCH -e $log/${name1}.%j.error
+#SBATCH --partition=${node}
+#SBATCH -J 5${1}
+#SBATCH -N 1
+#SBATCH -n ${thread}
+source /public/home/2022122/xugang/bashrc
+
+conda run -n FAN-C fanc dump $output/a11.fanc/hic/binned/fa${name}_100kb.hic $output/a11.fanc/dump/${name}_100kb.dum.tsv
+
+">a11.fanc.$counter.$name1.sh
+}
+fancdumpf mut
+fancdumpf oe
+fancdumpf wt
+
 ```
 
 
