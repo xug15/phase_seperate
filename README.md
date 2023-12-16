@@ -1177,8 +1177,6 @@ log=$output/a11.fanc/log
 #remove background file
 ((counter++))
 name=$1
-name1=$2
-name2=$3
 [[ -d $output/a11.fanc/dump ]] || mkdir -p $output/a11.fanc/dump
 
 echo "#!/bin/bash
@@ -1192,7 +1190,7 @@ source /public/home/2022122/xugang/bashrc
 
 conda run -n FAN-C fanc dump $output/a11.fanc/hic/binned/fa${name}_100kb.hic $output/a11.fanc/dump/${name}_100kb.dum.tsv
 
-">a11.fanc.$counter.$name1.sh
+">a12.fanc.dump.$counter.$name.sh
 }
 fancdumpf mut
 fancdumpf oe
