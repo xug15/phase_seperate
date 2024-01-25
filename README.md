@@ -1178,6 +1178,7 @@ log=$output/a11.fanc/log
 ((counter++))
 name=$1
 [[ -d $output/a11.fanc/dump ]] || mkdir -p $output/a11.fanc/dump
+[[ -d $output/a11.fanc/expected ]] || mkdir -p $output/a11.fanc/expected
 
 echo "#!/bin/bash
 #SBATCH -o $log/${name1}.%j.out
@@ -1189,12 +1190,37 @@ echo "#!/bin/bash
 source /public/home/2022122/xugang/bashrc
 
 conda run -n FAN-C fanc dump $output/a11.fanc/hic/binned/fa${name}_100kb.hic $output/a11.fanc/dump/${name}_100kb.dum.tsv
-
+conda run -n FAN-C fanc expected -p $output/a11.fanc/expected/${name}_100kb_expected.png  $output/a11.fanc/hic/binned/fa${name}_100kb.hic  $output/a11.fanc/expected/${name}_100kb_expected.txt
 ">a12.fanc.dump.$counter.$name.sh
 }
 fancdumpf mut
 fancdumpf oe
 fancdumpf wt
+
+
+fanccomparef(){
+log=$output/a11.fanc/log
+#remove background file
+((counter++))
+name1=$1
+name2=$2
+[[ -d $output/a11.fanc/compare ]] || mkdir -p $output/a11.fanc/compare
+
+echo "#!/bin/bash
+#SBATCH -o $log/${name1}.%j.out
+#SBATCH -e $log/${name1}.%j.error
+#SBATCH --partition=${node}
+#SBATCH -J 5${1}
+#SBATCH -N 1
+#SBATCH -n ${thread}
+source /public/home/2022122/xugang/bashrc
+
+conda run -n FAN-C fanc compare $output/a11.fanc/hic/binned/fa${name1}_100kb.hic $output/a11.fanc/hic/binned/fa${name2}_100kb.hic   $output/a11.fanc/compare/${name1}.vs.${name2}.comparsion.hic
+conda run -n FAN-C fanc dump $output/a11.fanc/compare/${name1}.vs.${name2}.comparsion.hic $output/a11.fanc/compare/${name1}.vs.${name2}.comparsion.tsv
+">a13.fanc.compare.$counter.$name1.sh
+}
+fanccomparef mut wt
+fanccomparef oe wt
 
 ```
 
@@ -1530,6 +1556,31 @@ optional arguments:
   -V, --version         Print version information
   --pdf-text-as-font    When saving a plot to PDF, save text as a font instead of a path. This will increase the file size, sometimes by a lot, but it makes the text in plots editable in vector graphics
                         programs such as Inkscape or Illustrator.
+```
+fanc expected
+```sh
+# expect fanc expected -h
+2023-12-16 13:03:59,612 INFO FAN-C version: 0.9.27
+usage: fanc expected [-h] [-p PLOT_FILE] [-l LABELS [LABELS ...]] [-c CHROMOSOME] [-tmp] [--recalculate] [-N] input [input ...] output
+
+Calculate Hi-C expected values (distance decay)
+
+positional arguments:
+  input                 Input matrix (Hi-C, fold-change map, ...)
+  output                Output expected contacts (tsv).
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -p PLOT_FILE, --plot PLOT_FILE
+                        Output file for distance decay plot (pdf).
+  -l LABELS [LABELS ...], --labels LABELS [LABELS ...]
+                        Labels for input objects.
+  -c CHROMOSOME, --chromosome CHROMOSOME
+                        Specific chromosome to calculate expected values for.
+  -tmp, --work-in-tmp   Work in temporary directory
+  --recalculate         Recalculate expected values regardless of whether they are already stored in the matrix object.
+  -N, --no-norm         Calculate expected values on unnormalised data.
+
 ```
 fanc compare
 ```sh
