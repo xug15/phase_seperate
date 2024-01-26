@@ -317,7 +317,7 @@ echo "#!/bin/bash
 #SBATCH -n ${thread}
 source /public/home/2022122/xugang/bashrc
 conda run -n deeptool bamCompare -b1 ${output}/a2-bam/${name1}.bam -b2  $output/a2-bam/${name2}.bam -o ${output}/a4-bw/${name3}.rmbg.bw -p $((thread)) --ignoreDuplicates --binSize 1000 
-
+bigWigToWig ${output}/a4-bw/${name3}.rmbg.bw ${output}/a4-bw/${name3}.rmbg.wig
 
 ">a4.$counter.$name1.sh
 }
@@ -329,6 +329,7 @@ bigcomparef wt_h3_IP.unique wt_h3_input.unique wt_h3
 bigcomparef wt_h3k27me3_IP.unique wt_h3k27me3_input.unique wt_h3k27me3 
 bigcomparef oe_h3k27me3_IP.unique oe_h3k27me3_input.unique oe_h3k27me3
 bigcomparef oe_h3_IP.unique oe_h3_input.unique oe_h3
+bigcomparef wt_h3k27me3_IP.unique wt_h3_IP.unique wt_h3k27me3_h3_withoutbackgorund
 ```
 
 
